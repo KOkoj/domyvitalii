@@ -1,0 +1,8 @@
+# Netlify redirects file for SPA routing
+# All routes should be handled by index.html for React Router
+
+# API routes - redirect to backend (if needed)
+/api/*  https://your-railway-app.railway.app/api/:splat  200
+
+# Handle all other routes with React Router
+/*    /index.html   200 
