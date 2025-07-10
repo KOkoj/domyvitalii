@@ -1,0 +1,41 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>YourTopia 2.0 – Map of Italy</title>
+	<script src="jquery-1.7.1.min.js"></script>	
+	<script src="jquery.qtip.min.js"></script>	
+	<script src="raphael-min.js" type="text/javascript"></script>
+	<script src="kartograph.min.js"></script>	
+	<script src="chroma.pack.min.js"></script>	
+	<script src="app.js" type="text/javascript"></script>
+
+	<link rel="stylesheet" href="style.css" />
+	<link rel="stylesheet" href="tooltips.css" />
+
+</head>
+<body>
+	<div id="wrap">
+		<div id="map">
+		
+		</div>
+		<div id="config">
+			
+			<h1>Hello Italy</h1>
+			
+			<p>Indicator: <select class="config" id="indicator"></select></p>
+			<p>Color scale: <select class="config" id="colors"></select></p>
+			<p>Scale type: <select class="config" id="scaletype">
+				<option value="e">equidistant</option>
+				<option value="q">quantiles</option>
+				<option value="k">k-means cluster</option>
+				<option value="c">continious</option>
+			</select></p>
+			
+			<h3>Legend</h3>
+			<div id="legend"></div>
+			
+			<p style="margin-top:2em">source: <a href="https://gist.github.com/1771315">this app</a>, <a href="https://gist.github.com/1779771">svg map</a></p>
+		</div>
+	</div>
+</body>
+</html>

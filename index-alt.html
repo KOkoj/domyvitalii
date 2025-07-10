@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure Parallax Test</title>
+    <link rel="stylesheet" href="parallax-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+
+    <!-- Parallax Hero Section -->
+    <section class="parallax-hero" id="parallaxHero">
+        <div class="parallax-container">
+            <!-- Layer 1 - Background (slowest) -->
+            <div class="parallax-layer parallax-layer-1" data-speed="0.1">
+                <img src="1.png" alt="Background Layer" class="parallax-image">
+            </div>
+            
+            <!-- Layer 2 -->
+            <div class="parallax-layer parallax-layer-2" data-speed="0.25">
+                <img src="2.png" alt="Layer 2" class="parallax-image">
+            </div>
+            
+            <!-- Layer 3 -->
+            <div class="parallax-layer parallax-layer-3" data-speed="0.4">
+                <img src="3.png" alt="Layer 3" class="parallax-image">
+            </div>
+            
+            <!-- Layer 4 -->
+            <div class="parallax-layer parallax-layer-4" data-speed="0.6">
+                <img src="4.png" alt="Layer 4" class="parallax-image">
+            </div>
+            
+            <!-- Layer 5 - Foreground (fastest) -->
+            <div class="parallax-layer parallax-layer-5" data-speed="0.8">
+                <img src="5.png" alt="Foreground Layer" class="parallax-image">
+            </div>
+        </div>
+    </section>
+
+    <!-- Simple content for scroll testing -->
+    <section class="scroll-content">
+        <div class="container">
+            <h2>Scroll to see parallax effect</h2>
+            <p>Watch how the layers move at different speeds as you scroll.</p>
+            <div style="height: 200vh; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                <div style="background: rgba(255,255,255,0.9); padding: 2rem; border-radius: 10px; margin: 2rem; text-align: center;">
+                    <h3>Parallax Animation Test</h3>
+                    <p>Keep scrolling to see how each layer moves at different speeds:</p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>🐢 Layer 1: Slowest (0.1x speed)</li>
+                        <li>🚶 Layer 2: Slow (0.25x speed)</li>
+                        <li>🏃 Layer 3: Medium (0.4x speed)</li>
+                        <li>🏃‍♂️ Layer 4: Fast (0.6x speed)</li>
+                        <li>🏎️ Layer 5: Fastest (0.8x speed)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scripts -->
+    <script src="parallax-script.js"></script>
+</body>
+</html> 

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Domy v Itálii</title>
+    <meta name="description" content="Objevte zajímavosti o Itálii, tipy pro výběr nemovitostí a aktuální informace o trhu s nemovitostmi.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="blog-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html" class="logo-link">
+                    <img src="Group 6.svg" alt="Domy v Itálii" class="logo-image">
+                </a>
+            </div>
+            
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Domov</a>
+                <a href="listing.html" class="nav-link">Nabídka</a>
+                <a href="#" class="nav-link">O nás</a>
+                <a href="#" class="nav-link">Podmínky</a>
+                <a href="blog.html" class="nav-link active">Blog</a>
+                <a href="#" class="nav-link">Kontakt</a>
+            </nav>
+            
+            <div class="header-actions">
+                <a href="#" class="register-link">Registrovat</a>
+                <button class="login-btn">Přihlásit se</button>
+            </div>
+            
+            <!-- Hamburger Menu Button -->
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            
+            <!-- Mobile Menu -->
+            <div class="mobile-menu" id="mobileMenu">
+                <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Zavřít menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div class="mobile-menu-content">
+                    <a href="index.html" class="mobile-nav-link">Domov</a>
+                    <a href="listing.html" class="mobile-nav-link">Nabídka</a>
+                    <a href="#" class="mobile-nav-link">O nás</a>
+                    <a href="#" class="mobile-nav-link">Podmínky</a>
+                    <a href="blog.html" class="mobile-nav-link active">Blog</a>
+                    <a href="#" class="mobile-nav-link">Kontakt</a>
+                    <div class="mobile-menu-actions">
+                        <a href="#" class="mobile-register-link">Registrovat</a>
+                        <button class="mobile-login-btn">Přihlásit se</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Blog Hero Section -->
+    <section class="blog-hero">
+        <div class="container">
+            <div class="blog-hero-content">
+                <h1 class="blog-hero-title">Italské Insights</h1>
+                <p class="blog-hero-description">
+                    Objevte krásy Itálie, získejte praktické rady pro výběr nemovitostí a držte krok s aktuálními trendy na trhu.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Content -->
+    <section class="blog-content">
+        <div class="container">
+            <!-- Blog Filters -->
+            <div class="blog-filters">
+                <div class="blog-filters-main">
+                    <div class="family-tabs">
+                        <button class="family-tab active" data-family="all">Vše</button>
+                        <button class="family-tab" data-family="trivia">Zajímavosti</button>
+                        <button class="family-tab" data-family="property">Nemovitosti</button>
+                        <button class="family-tab" data-family="company">Naše společnost</button>
+                    </div>
+                    
+                    <div class="topic-pills" id="topicPills">
+                        <!-- Topics will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div class="blog-search">
+                    <div class="search-container">
+                        <input type="text" id="blogSearch" placeholder="Hledat články..." class="search-input">
+                        <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19.6 21L13.3 14.7C12.8 15.1 12.225 15.4167 11.575 15.65C10.925 15.8833 10.2333 16 9.5 16C7.68333 16 6.14583 15.3708 4.8875 14.1125C3.62917 12.8542 3 11.3167 3 9.5C3 7.68333 3.62917 6.14583 4.8875 4.8875C6.14583 3.62917 7.68333 3 9.5 3C11.3167 3 12.8542 3.62917 14.1125 4.8875C15.3708 6.14583 16 7.68333 16 9.5C16 10.2333 15.8833 10.925 15.65 11.575C15.4167 12.225 15.1 12.8 14.7 13.3L21 19.6L19.6 21ZM9.5 14C10.75 14 11.8125 13.5625 12.6875 12.6875C13.5625 11.8125 14 10.75 14 9.5C14 8.25 13.5625 7.1875 12.6875 6.3125C11.8125 5.4375 10.75 5 9.5 5C8.25 5 7.1875 5.4375 6.3125 6.3125C5.4375 7.1875 5 8.25 5 9.5C5 10.75 5.4375 11.8125 6.3125 12.6875C7.1875 13.5625 8.25 14 9.5 14Z" fill="currentColor"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blog Grid -->
+            <div class="blog-grid" id="blogGrid">
+                <!-- Blog posts will be populated by JavaScript -->
+            </div>
+
+            <!-- Load More Button -->
+            <div class="blog-load-more" id="loadMoreContainer" style="display: none;">
+                <button class="load-more-btn" id="loadMoreBtn">Načíst další články</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-content">
+                <div class="newsletter-text">
+                    <h3 class="newsletter-title">Zůstaňte v obraze</h3>
+                    <p class="newsletter-description">Přihlaste se k odběru našeho newsletteru a získejte nejnovější články a tipy přímo do vaší schránky.</p>
+                </div>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Váš e-mail" class="newsletter-input">
+                    <button class="newsletter-btn">Přihlásit se</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <img src="Group 6.svg" alt="Domy v Itálii" class="footer-logo-image">
+                    </div>
+                    <p class="footer-description">
+                        Pomáháme najít váš vysněný dům v Itálii. Profesionální služby, osobní přístup.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Navigace</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Domov</a></li>
+                        <li><a href="listing.html">Nabídka</a></li>
+                        <li><a href="#">O nás</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="#">Kontakt</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Kontakt</h4>
+                    <ul class="footer-contacts">
+                        <li>info@domyvitalii.cz</li>
+                        <li>+420 123 456 789</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Domy v Itálii. Všechna práva vyhrazena.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="blog-script.js"></script>
+</body>
+</html> 

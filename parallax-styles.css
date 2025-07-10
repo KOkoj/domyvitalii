@@ -1,0 +1,249 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+}
+
+/* Container for content */
+.container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Parallax Hero Section */
+.parallax-hero {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #a8e6cf 0%, #dcedc8 100%);
+}
+
+.parallax-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120%; /* Extra height for parallax effect */
+    pointer-events: none;
+}
+
+.parallax-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    will-change: transform;
+    transition: transform 0.1s ease-out;
+}
+
+.parallax-image {
+    width: 100%;
+    height: 120%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+    image-rendering: auto;
+    image-rendering: smooth;
+    image-rendering: high-quality;
+    image-rendering: -webkit-optimize-contrast;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateY(-25%) translateZ(0) scale(1.1);
+    -webkit-transform: translateY(-25%) translateZ(0) scale(1.1);
+    filter: blur(0.3px);
+    -webkit-filter: blur(0.3px);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Layer-specific styles */
+.parallax-layer-1 {
+    z-index: 1;
+    opacity: 0.9;
+}
+
+.parallax-layer-2 {
+    z-index: 2;
+    opacity: 0.95;
+}
+
+.parallax-layer-3 {
+    z-index: 3;
+}
+
+.parallax-layer-4 {
+    z-index: 4;
+}
+
+.parallax-layer-5 {
+    z-index: 5;
+}
+
+/* Responsive scaling to ensure key elements fit within 1300px viewing area */
+@media (min-width: 1600px) {
+    .parallax-image {
+        transform: translateY(-25%) translateZ(0) scale(1.2);
+        -webkit-transform: translateY(-25%) translateZ(0) scale(1.2);
+    }
+}
+
+@media (min-width: 1301px) and (max-width: 1599px) {
+    .parallax-image {
+        transform: translateY(-25%) translateZ(0) scale(1.15);
+        -webkit-transform: translateY(-25%) translateZ(0) scale(1.15);
+    }
+}
+
+@media (max-width: 1300px) {
+    .parallax-image {
+        transform: translateY(-25%) translateZ(0) scale(1.1);
+        -webkit-transform: translateY(-25%) translateZ(0) scale(1.1);
+    }
+}
+
+@media (max-width: 768px) {
+    .parallax-image {
+        transform: translateY(-25%) translateZ(0) scale(0.9);
+        -webkit-transform: translateY(-25%) translateZ(0) scale(0.9);
+    }
+}
+
+/* Simple content for scroll testing */
+.scroll-content {
+    padding: 4rem 0;
+    background: #f8f9fa;
+    text-align: center;
+}
+
+.scroll-content h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.scroll-content p {
+    font-size: 1.1rem;
+    color: #666;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Load animations for parallax layers */
+@keyframes parallaxLayerSlideIn {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Layer load animations with staggered timing */
+.parallax-layer-1 {
+    animation: parallaxLayerSlideIn 1.5s ease-out 0.1s both;
+}
+
+.parallax-layer-2 {
+    animation: parallaxLayerSlideIn 1.5s ease-out 0.2s both;
+}
+
+.parallax-layer-3 {
+    animation: parallaxLayerSlideIn 1.5s ease-out 0.3s both;
+}
+
+.parallax-layer-4 {
+    animation: parallaxLayerSlideIn 1.5s ease-out 0.4s both;
+}
+
+.parallax-layer-5 {
+    animation: parallaxLayerSlideIn 1.5s ease-out 0.5s both;
+}
+
+
+
+/* Keyframes for content animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .parallax-hero {
+        height: 100vh;
+    }
+    
+    .scroll-content {
+        padding: 2rem 0;
+    }
+    
+    .scroll-content h2 {
+        font-size: 2rem;
+    }
+    
+    .scroll-content p {
+        font-size: 1rem;
+    }
+}
+
+/* Performance optimizations */
+.parallax-layer {
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+}
+
+/* Smooth scrolling enhancement */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Loading and Loaded States */
+.loading .parallax-layer {
+    opacity: 0;
+    transform: translateY(60px);
+}
+
+.loaded .parallax-layer {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Animation Pause States */
+.animations-paused * {
+    animation-play-state: paused !important;
+}
+
+/* Touch Device Optimizations */
+.touch-scrolling .parallax-layer {
+    transform: none !important;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .parallax-layer {
+        transform: none !important;
+        animation: none !important;
+    }
+    
+    html {
+        scroll-behavior: auto;
+    }
+} 

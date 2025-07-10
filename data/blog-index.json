@@ -1,0 +1,150 @@
+{
+  "posts": [
+    {
+      "id": "1",
+      "title": "Toskánsko: Srdce italské kultury a umění",
+      "slug": "toskansko-srdce-italske-kultury",
+      "family": "trivia",
+      "topic": "regions",
+      "tags": ["Toskánsko", "kultura", "umění", "Florencie"],
+      "cover": "/images/blog/tuscany-culture.jpg",
+      "excerpt": "Objevte bohaté kulturní dědictví Toskánska, od renesančních mistrů po moderní umělce. Proč je tento region považován za kolébku italské kultury?",
+      "publishDate": "2024-12-15",
+      "readTime": 6,
+      "author": "Martina Svobodová"
+    },
+    {
+      "id": "2",
+      "title": "Autentická italská kuchyně: Od severu na jih",
+      "slug": "autenticka-italska-kuchyne",
+      "family": "trivia",
+      "topic": "food",
+      "tags": ["kuchyně", "jídlo", "tradice", "recepty"],
+      "cover": "/images/blog/italian-cuisine.jpg",
+      "excerpt": "Každý region v Itálii má své kulinářské speciality. Poznejte rozdíly mezi severní a jižní italskou kuchyní a objevte autentické recepty.",
+      "publishDate": "2024-12-12",
+      "readTime": 8,
+      "author": "Giuseppe Rossi"
+    },
+    {
+      "id": "3",
+      "title": "Italské tradice a svátky: Průvodce rokem",
+      "slug": "italske-tradice-a-svatky",
+      "family": "trivia",
+      "topic": "culture",
+      "tags": ["tradice", "svátky", "kultura", "kalendář"],
+      "cover": "/images/blog/italian-traditions.jpg",
+      "excerpt": "Od karnevalu v Benátkách po vánoční tradice na Sicílii. Seznamte se s nejdůležitějšími italskými svátky a tradicemi během roku.",
+      "publishDate": "2024-12-10",
+      "readTime": 7,
+      "author": "Elena Bianchi"
+    },
+    {
+      "id": "4",
+      "title": "Nové daňové změny pro zahraniční investory v roce 2024",
+      "slug": "nove-danove-zmeny-2024",
+      "family": "property",
+      "topic": "legal",
+      "tags": ["daně", "investice", "právo", "2024"],
+      "cover": "/images/blog/tax-changes.jpg",
+      "excerpt": "Přehled nejdůležitějších daňových změn, které ovlivní zahraniční investory do italských nemovitostí v roce 2024. Co potřebujete vědět?",
+      "publishDate": "2024-12-08",
+      "readTime": 10,
+      "author": "Avv. Marco Ferretti"
+    },
+    {
+      "id": "5",
+      "title": "Jak vybrat ideální nemovitost v Itálii: Kompletní průvodce",
+      "slug": "jak-vybrat-idealni-nemovitost",
+      "family": "property",
+      "topic": "choosing",
+      "tags": ["výběr", "nemovitosti", "průvodce", "tipy"],
+      "cover": "/images/blog/choosing-property.jpg",
+      "excerpt": "10 klíčových faktorů, které byste měli zvážit při výběru nemovitosti v Itálii. Od lokace přes právní aspekty až po budoucí potenciál.",
+      "publishDate": "2024-12-05",
+      "readTime": 12,
+      "author": "Tomáš Novák"
+    },
+    {
+      "id": "6",
+      "title": "Italský trh s nemovitostmi: Trendy a prognózy pro rok 2025",
+      "slug": "italsky-trh-trendy-2025",
+      "family": "property",
+      "topic": "news",
+      "tags": ["trh", "trendy", "prognózy", "analýza"],
+      "cover": "/images/blog/market-trends.jpg",
+      "excerpt": "Analýza současného stavu italského trhu s nemovitostmi a očekávané trendy pro nadcházející rok. Kde hledat nejlepší příležitosti?",
+      "publishDate": "2024-12-03",
+      "readTime": 9,
+      "author": "Dr. Lucia Conti"
+    },
+    {
+      "id": "7",
+      "title": "Náš proces: Jak vám pomáháme najít dům snů",
+      "slug": "nas-proces-dum-snu",
+      "family": "company",
+      "topic": "process",
+      "tags": ["proces", "služby", "klienti", "průvodce"],
+      "cover": "/images/blog/our-process.jpg",
+      "excerpt": "Krok za krokem: Jak probíhá naše spolupráce od prvního kontaktu až po předání klíčů. Transparentní proces, který vás provede celou cestou.",
+      "publishDate": "2024-12-01",
+      "readTime": 5,
+      "author": "Domy v Itálii Team"
+    },
+    {
+      "id": "8",
+      "title": "Proč investovat do nemovitostí v Itálii v roce 2024?",
+      "slug": "proc-investovat-italie-2024",
+      "family": "company",
+      "topic": "invest-rent",
+      "tags": ["investice", "výhody", "ROI", "budoucnost"],
+      "cover": "/images/blog/why-invest.jpg",
+      "excerpt": "5 hlavních důvodů, proč je Itálie stále atraktivní destinací pro investice do nemovitostí. Analýza výnosnosti a dlouhodobých perspektiv.",
+      "publishDate": "2024-11-28",
+      "readTime": 8,
+      "author": "Pavel Kratochvíl"
+    },
+    {
+      "id": "9",
+      "title": "Proč si koupit dům v Itálii: Více než jen investice",
+      "slug": "proc-si-koupit-dum-v-italii",
+      "family": "company",
+      "topic": "why-italy",
+      "tags": ["životní styl", "kultura", "klima", "kvalita života"],
+      "cover": "/images/blog/why-italy.jpg",
+      "excerpt": "Dům v Itálii není jen investice, ale cesta k novému životnímu stylu. Objevte, proč tisíce lidí volí Itálii jako svůj druhý domov.",
+      "publishDate": "2024-11-25",
+      "readTime": 7,
+      "author": "Anna Procházková"
+    }
+  ],
+  "families": {
+    "trivia": {
+      "name": "Zajímavosti",
+      "description": "Objevte krásy Itálie",
+      "topics": {
+        "regions": "Regiony",
+        "food": "Jídlo",
+        "culture": "Kultura"
+      }
+    },
+    "property": {
+      "name": "Nemovitosti",
+      "description": "Vše o trhu a právních aspektech",
+      "topics": {
+        "news": "Novinky",
+        "legal": "Právo",
+        "choosing": "Výběr nemovitosti"
+      }
+    },
+    "company": {
+      "name": "Naše společnost",
+      "description": "Proč zvolit nás",
+      "topics": {
+        "process": "Náš proces",
+        "why-italy": "Proč Itálie",
+        "invest-rent": "Investice a pronájem"
+      }
+    }
+  }
+} 

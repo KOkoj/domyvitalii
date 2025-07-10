@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galerie - Vila s výhledem na moře | Domy v Itálii</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="property-detail-styles.css">
+    <style>
+        /* Gallery page specific styles */
+        .gallery-main {
+            margin-top: 140px;
+            padding: 20px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .gallery-container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .property-info-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .property-basic-info h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .property-location {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .property-price {
+            position: static !important;
+            bottom: auto !important;
+            right: auto !important;
+            background: none !important;
+            color: #3E6343 !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            backdrop-filter: none !important;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .gallery-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .gallery-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 18px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .gallery-action-btn:hover {
+            border-color: #3E6343;
+            color: #3E6343;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(62, 99, 67, 0.2);
+        }
+        
+        /* Filter tabs */
+        .gallery-filter-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .gallery-tab {
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .gallery-tab.active {
+            background: #3E6343;
+            color: white;
+            border-color: #3E6343;
+        }
+        
+        .gallery-tab:hover:not(.active) {
+            border-color: #3E6343;
+            color: #3E6343;
+        }
+        
+        /* Photo grid */
+        .photo-gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 5px;
+            margin-top: 30px;
+        }
+        
+        .gallery-photo-item {
+            position: relative;
+            aspect-ratio: 4/3;
+            border-radius: 5px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        .gallery-photo-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .gallery-photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-photo-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        .photo-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            padding: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-photo-item:hover .photo-overlay {
+            transform: translateY(0);
+        }
+        
+        .photo-category {
+            color: #88D498;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .photo-title {
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* Hide filtered items */
+        .gallery-photo-item.hidden {
+            display: none;
+        }
+
+        /* Lightbox Styles */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .lightbox-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightbox-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .lightbox-overlay.active .lightbox-content {
+            transform: scale(1);
+        }
+
+        .lightbox-image-container {
+            position: relative;
+            background: #f8f9fa;
+        }
+
+        .lightbox-image {
+            width: 100%;
+            height: auto;
+            max-height: 70vh;
+            object-fit: contain;
+            display: block;
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .lightbox-nav.prev {
+            left: 15px;
+        }
+
+        .lightbox-nav.next {
+            right: 15px;
+        }
+
+        .lightbox-nav:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .lightbox-nav:disabled:hover {
+            transform: translateY(-50%) scale(1);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+        }
+
+        .lightbox-info {
+            padding: 20px;
+            background: white;
+        }
+
+        .lightbox-category {
+            color: #3E6343;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .lightbox-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .lightbox-counter {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Gallery-specific breadcrumb styling */
+        .gallery-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .breadcrumb-link {
+            color: #3E6343;
+            text-decoration: none;
+        }
+        
+        .breadcrumb-separator {
+            color: #999;
+        }
+        
+        .breadcrumb-current {
+            color: #333;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- Unified Header -->
+    <header class="unified-header">
+        <div class="unified-container">
+            <!-- Left side: Logo with navigation popup and property navigation -->
+            <div class="header-left">
+                <!-- Logo with hover navigation -->
+                <div class="header-logo">
+                    <a href="index.html" class="logo-link">
+                        <img src="Group 6.svg" alt="Domy v Itálii" class="logo-image">
+                    </a>
+                    <!-- Navigation popup -->
+                    <nav class="header-nav-popup">
+                        <a href="index.html" class="nav-popup-link">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                            </svg>
+                            Domů
+                        </a>
+                        <a href="listing.html" class="nav-popup-link active">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 21V9l9-7 9 7v12h-4v-7h-10v7H3z"/>
+                            </svg>
+                            Vyhledávání
+                        </a>
+                        <a href="#" class="nav-popup-link">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            Oblíbené
+                        </a>
+                        <a href="#" class="nav-popup-link">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
+                            Kontakt
+                        </a>
+                        <!-- Actions section in popup -->
+                        <div class="nav-popup-actions">
+                            <a href="#" class="nav-popup-register-link">Registrovat</a>
+                            <button class="nav-popup-login-btn">Přihlásit se</button>
+                        </div>
+                    </nav>
+                </div>
+
+                <!-- Property navigation -->
+                <div class="property-navigation">
+                    <button class="back-to-listing" onclick="window.location.href='property-detail.html'">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                        </svg>
+                        Zpět na detail
+                    </button>
+                    <div class="nav-separator"></div>
+                    <div class="gallery-breadcrumb">
+                        <a href="property-detail.html" class="breadcrumb-link">Vila s výhledem na moře</a>
+                        <span class="breadcrumb-separator">›</span>
+                        <span class="breadcrumb-current">Galerie</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right side: Action buttons -->
+            <div class="header-right">
+                <button class="header-action-btn edit-btn" onclick="alert('Editace vlastností...')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                    </svg>
+                </button>
+                <button class="header-action-btn share-btn" onclick="alert('Odkaz zkopírován!')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
+                    </svg>
+                </button>
+                <button class="header-action-btn save-btn" onclick="alert('Nemovitost uložena!')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    Uložit
+                </button>
+                <button class="header-action-btn copy-btn" onclick="alert('Odkaz zkopírován!')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>
+                    Kopírovat
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Gallery Content -->
+    <main class="gallery-main">
+        <div class="gallery-container">
+            
+            <!-- Property Info Header -->
+            <div class="property-info-header">
+                <div class="property-basic-info">
+                    <h1>Vila s výhledem na moře</h1>
+                    <p class="property-location">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                        Cinque Terre, Toskánsko
+                    </p>
+                    <div class="property-price">€850,000</div>
+                </div>
+
+                <!-- Gallery Action Buttons -->
+                <div class="gallery-actions">
+                    <button class="gallery-action-btn message-btn" onclick="alert('Otevření kontaktního formuláře...')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4v3c0 1.1 1.35 1.74 2.21 1.19L12.83 18H20c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                        </svg>
+                        <span>Napsat zprávu</span>
+                    </button>
+                    
+                    <button class="gallery-action-btn contact-btn" onclick="alert('Kontaktování majitele...')">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                        </svg>
+                        <span>Kontaktovat</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Gallery Filter Tabs -->
+            <div class="gallery-filter-tabs">
+                <button class="gallery-tab active" data-filter="all">Všechny (25)</button>
+                <button class="gallery-tab" data-filter="bedroom">Ložnice (9)</button>
+                <button class="gallery-tab" data-filter="kitchen">Kuchyně (4)</button>
+                <button class="gallery-tab" data-filter="bathroom">Koupelna (3)</button>
+                <button class="gallery-tab" data-filter="exterior">Exteriér (6)</button>
+                <button class="gallery-tab" data-filter="other">Ostatní (3)</button>
+            </div>
+
+            <!-- Photo Gallery Grid -->
+            <div class="photo-gallery-grid" id="photoGrid">
+                
+                <!-- Bedroom Photos -->
+                <div class="gallery-photo-item" data-category="bedroom">
+                    <img src="pexels-pixabay-210017.jpg" alt="Hlavní ložnice" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Ložnice</div>
+                        <div class="photo-title">Hlavní ložnice s výhledem na moře</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="bedroom">
+                    <img src="pexels-grisentig-4215104.jpg" alt="Ložnice s výhledem" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Ložnice</div>
+                        <div class="photo-title">Ložnice s panoramatickým výhledem</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="bedroom">
+                    <img src="pexels-small-steps-898071686-19990849.jpg" alt="Druhá ložnice" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Ložnice</div>
+                        <div class="photo-title">Druhá ložnice</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="bedroom">
+                    <img src="pexels-alexandre-moreira-2527876-32622895.jpg" alt="Třetí ložnice" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Ložnice</div>
+                        <div class="photo-title">Hostovská ložnice</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="bedroom">
+                    <img src="pexels-manousos-kampanellis-56682656-27377438.jpg" alt="Dětský pokoj" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Ložnice</div>
+                        <div class="photo-title">Dětský pokoj</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="bedroom">
+                    <img src="pexels-josh-hild-1270765-2422259 (1).jpg" alt="Šatna" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Ložnice</div>
+                        <div class="photo-title">Šatna</div>
+                    </div>
+                </div>
+
+                <!-- Kitchen Photos -->
+                <div class="gallery-photo-item" data-category="kitchen">
+                    <img src="pexels-mickyiaia34-709478.jpg" alt="Hlavní kuchyně" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Kuchyně</div>
+                        <div class="photo-title">Hlavní kuchyně s ostrovem</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="kitchen">
+                    <img src="pexels-josh-hild-1270765-2422259 (1).jpg" alt="Kuchyňský kout" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Kuchyně</div>
+                        <div class="photo-title">Kuchyňský kout</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="kitchen">
+                    <img src="pexels-alexandre-moreira-2527876-32622895.jpg" alt="Jídelna" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Kuchyně</div>
+                        <div class="photo-title">Jídelní kout</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="kitchen">
+                    <img src="pexels-manousos-kampanellis-56682656-27377438.jpg" alt="Kuchyně detail" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Kuchyně</div>
+                        <div class="photo-title">Detail kuchyňské linky</div>
+                    </div>
+                </div>
+
+                <!-- Bathroom Photos -->
+                <div class="gallery-photo-item" data-category="bathroom">
+                    <img src="pexels-alexandre-moreira-2527876-32622895.jpg" alt="Hlavní koupelna" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Koupelna</div>
+                        <div class="photo-title">Hlavní koupelna s vanou</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="bathroom">
+                    <img src="pexels-manousos-kampanellis-56682656-27377438.jpg" alt="Koupelna s vanou" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Koupelna</div>
+                        <div class="photo-title">Luxusní koupelna</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="bathroom">
+                    <img src="pexels-grisentig-4215104.jpg" alt="Sprchový kout" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Koupelna</div>
+                        <div class="photo-title">Sprchový kout</div>
+                    </div>
+                </div>
+
+                <!-- Exterior Photos -->
+                <div class="gallery-photo-item" data-category="exterior">
+                    <img src="pexels-pixabay-210017.jpg" alt="Venkovní terasa" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Exteriér</div>
+                        <div class="photo-title">Venkovní terasa s výhledem</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="exterior">
+                    <img src="pexels-grisentig-4215104.jpg" alt="Zahrada" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Exteriér</div>
+                        <div class="photo-title">Středomořská zahrada</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="exterior">
+                    <img src="pexels-josh-hild-1270765-2422259 (1).jpg" alt="Výhled z balkonu" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Exteriér</div>
+                        <div class="photo-title">Výhled z balkonu</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="exterior">
+                    <img src="pexels-small-steps-898071686-19990849.jpg" alt="Bazén" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Exteriér</div>
+                        <div class="photo-title">Bazén s lehátky</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="exterior">
+                    <img src="pexels-mickyiaia34-709478.jpg" alt="Venkovní grilování" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Exteriér</div>
+                        <div class="photo-title">Venkovní kuchyně</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="exterior">
+                    <img src="pexels-alexandre-moreira-2527876-32622895.jpg" alt="Venkovní prostor" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Exteriér</div>
+                        <div class="photo-title">Venkovní relaxační zóna</div>
+                    </div>
+                </div>
+
+                <!-- Other Photos -->
+                <div class="gallery-photo-item" data-category="other">
+                    <img src="pexels-mickyiaia34-709478.jpg" alt="Obývací pokoj" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Ostatní</div>
+                        <div class="photo-title">Prostorný obývací pokoj</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="other">
+                    <img src="pexels-manousos-kampanellis-56682656-27377438.jpg" alt="Knihovna" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Ostatní</div>
+                        <div class="photo-title">Domácí knihovna</div>
+                    </div>
+                </div>
+
+                <div class="gallery-photo-item" data-category="other">
+                    <img src="pexels-small-steps-898071686-19990849.jpg" alt="Chodba" loading="lazy">
+                    <div class="photo-overlay">
+                        <div class="photo-category">Ostatní</div>
+                        <div class="photo-title">Elegantní chodba</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Lightbox -->
+    <div class="lightbox-overlay" id="lightbox">
+        <div class="lightbox-content">
+            <div class="lightbox-image-container">
+                <img class="lightbox-image" id="lightbox-image" src="" alt="">
+                
+                <!-- Navigation arrows -->
+                <button class="lightbox-nav prev" id="lightbox-prev">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                    </svg>
+                </button>
+                
+                <button class="lightbox-nav next" id="lightbox-next">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+                    </svg>
+                </button>
+                
+                <!-- Close button -->
+                <button class="lightbox-close" id="lightbox-close">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Photo info -->
+            <div class="lightbox-info">
+                <div class="lightbox-category" id="lightbox-category"></div>
+                <div class="lightbox-title" id="lightbox-title"></div>
+                <div class="lightbox-counter" id="lightbox-counter"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gallery filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.gallery-tab');
+            const photos = document.querySelectorAll('.gallery-photo-item');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Filter photos
+                    photos.forEach(photo => {
+                        const category = photo.getAttribute('data-category');
+                        
+                        if (filter === 'all' || category === filter) {
+                            photo.classList.remove('hidden');
+                        } else {
+                            photo.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            // Lightbox functionality
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightbox-image');
+            const lightboxCategory = document.getElementById('lightbox-category');
+            const lightboxTitle = document.getElementById('lightbox-title');
+            const lightboxCounter = document.getElementById('lightbox-counter');
+            const lightboxPrev = document.getElementById('lightbox-prev');
+            const lightboxNext = document.getElementById('lightbox-next');
+            const lightboxClose = document.getElementById('lightbox-close');
+
+            let currentImageIndex = 0;
+            let currentImages = [];
+
+            function getVisibleImages() {
+                return Array.from(photos).filter(photo => !photo.classList.contains('hidden'));
+            }
+
+            function openLightbox(clickedPhoto) {
+                currentImages = getVisibleImages();
+                currentImageIndex = currentImages.indexOf(clickedPhoto);
+                
+                if (currentImageIndex === -1) {
+                    currentImageIndex = 0;
+                }
+                
+                updateLightboxContent();
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            function updateLightboxContent() {
+                const currentPhoto = currentImages[currentImageIndex];
+                const img = currentPhoto.querySelector('img');
+                const categoryEl = currentPhoto.querySelector('.photo-category');
+                const titleEl = currentPhoto.querySelector('.photo-title');
+
+                lightboxImage.src = img.src;
+                lightboxImage.alt = img.alt;
+                lightboxCategory.textContent = categoryEl ? categoryEl.textContent : '';
+                lightboxTitle.textContent = titleEl ? titleEl.textContent : img.alt;
+                lightboxCounter.textContent = `${currentImageIndex + 1} z ${currentImages.length}`;
+
+                // Update navigation buttons
+                lightboxPrev.disabled = currentImageIndex === 0;
+                lightboxNext.disabled = currentImageIndex === currentImages.length - 1;
+            }
+
+            function showPrevImage() {
+                if (currentImageIndex > 0) {
+                    currentImageIndex--;
+                    updateLightboxContent();
+                }
+            }
+
+            function showNextImage() {
+                if (currentImageIndex < currentImages.length - 1) {
+                    currentImageIndex++;
+                    updateLightboxContent();
+                }
+            }
+
+            // Add click handlers to photos
+            photos.forEach(photo => {
+                photo.addEventListener('click', function() {
+                    openLightbox(this);
+                });
+            });
+
+            // Lightbox controls
+            lightboxClose.addEventListener('click', closeLightbox);
+            lightboxPrev.addEventListener('click', showPrevImage);
+            lightboxNext.addEventListener('click', showNextImage);
+
+            // Close lightbox when clicking outside
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (!lightbox.classList.contains('active')) return;
+
+                switch(e.key) {
+                    case 'Escape':
+                        closeLightbox();
+                        break;
+                    case 'ArrowLeft':
+                        showPrevImage();
+                        break;
+                    case 'ArrowRight':
+                        showNextImage();
+                        break;
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

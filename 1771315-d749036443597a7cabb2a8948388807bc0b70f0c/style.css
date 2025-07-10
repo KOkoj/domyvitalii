@@ -1,0 +1,57 @@
+#map {
+	width: 600px;
+	margin-left: 400px;
+}
+
+#map svg path {
+	stroke-width: .4px;
+	stroke: #666;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+#map svg .outline {
+	stroke: none;
+	fill: #fff;
+	fill-opacity: 0;
+}
+
+
+#map svg .outline:hover {
+	stroke: #000;
+	stroke-width: 2px;
+}
+
+#map svg circle{
+	stroke: #000;
+	stroke-width: 0px;
+}
+
+#wrap {
+	width: 1000px;
+	margin: 2em auto;
+	position: relative;
+}
+
+#config {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	line-height: 2em;
+}
+
+body {
+	font-weight: 300;
+	font-family: Palatino, Georgia, Helvetica Neue, sans-serif;
+}
+select { padding: 4px; font-size:9pt;}
+
+h1 {
+	font-size: 40px;
+}
+
+#legend { position: relative; }
+#legend .row { margin-bottom: 5px;}
+#legend .col { width: 40px; height: 30px; float: left; margin-right: 10px;}
+
+p { margin: 5px 0; }

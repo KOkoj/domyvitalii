@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{POST_TITLE}} - Domy v Itálii</title>
+    <meta name="description" content="{{POST_EXCERPT}}">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="blog-styles.css">
+    <link rel="stylesheet" href="blog-post-styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html" class="logo-link">
+                    <img src="Group 6.svg" alt="Domy v Itálii" class="logo-image">
+                </a>
+            </div>
+            
+            <nav class="nav">
+                <a href="index.html" class="nav-link">Domov</a>
+                <a href="listing.html" class="nav-link">Nabídka</a>
+                <a href="#" class="nav-link">O nás</a>
+                <a href="#" class="nav-link">Podmínky</a>
+                <a href="blog.html" class="nav-link active">Blog</a>
+                <a href="#" class="nav-link">Kontakt</a>
+            </nav>
+            
+            <div class="header-actions">
+                <a href="#" class="register-link">Registrovat</a>
+                <button class="login-btn">Přihlásit se</button>
+            </div>
+            
+            <!-- Hamburger Menu Button -->
+            <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+            
+            <!-- Mobile Menu -->
+            <div class="mobile-menu" id="mobileMenu">
+                <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Zavřít menu">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18 6L6 18M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+                <div class="mobile-menu-content">
+                    <a href="index.html" class="mobile-nav-link">Domov</a>
+                    <a href="listing.html" class="mobile-nav-link">Nabídka</a>
+                    <a href="#" class="mobile-nav-link">O nás</a>
+                    <a href="#" class="mobile-nav-link">Podmínky</a>
+                    <a href="blog.html" class="mobile-nav-link active">Blog</a>
+                    <a href="#" class="mobile-nav-link">Kontakt</a>
+                    <div class="mobile-menu-actions">
+                        <a href="#" class="mobile-register-link">Registrovat</a>
+                        <button class="mobile-login-btn">Přihlásit se</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breadcrumb -->
+    <section class="breadcrumb">
+        <div class="container">
+            <nav class="breadcrumb-nav">
+                <a href="index.html" class="breadcrumb-link">Domov</a>
+                <span class="breadcrumb-separator">/</span>
+                <a href="blog.html" class="breadcrumb-link">Blog</a>
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-current">{{POST_TITLE}}</span>
+            </nav>
+        </div>
+    </section>
+
+    <!-- Post Hero -->
+    <section class="post-hero">
+        <div class="container">
+            <div class="post-hero-content">
+                <div class="post-meta">
+                    <span class="post-family">{{FAMILY_NAME}}</span>
+                    <span class="post-topic">{{TOPIC_NAME}}</span>
+                </div>
+                <h1 class="post-title">{{POST_TITLE}}</h1>
+                <div class="post-info">
+                    <div class="post-author">
+                        <span class="author-name">{{AUTHOR}}</span>
+                    </div>
+                    <div class="post-details">
+                        <span class="post-date">{{FORMATTED_DATE}}</span>
+                        <span class="post-read-time">{{READ_TIME}} min čtení</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Post Content -->
+    <article class="post-content">
+        <div class="container">
+            <div class="post-layout">
+                <div class="post-main">
+                    <!-- Featured Image -->
+                    <div class="post-featured-image">
+                        <img src="{{POST_COVER}}" alt="{{POST_TITLE}}" onerror="this.style.display='none'">
+                    </div>
+
+                    <!-- Post Body -->
+                    <div class="post-body">
+                        {{POST_CONTENT}}
+                    </div>
+
+                    <!-- Post Tags -->
+                    <div class="post-tags">
+                        <h4 class="tags-title">Štítky:</h4>
+                        <div class="tags-list">
+                            {{POST_TAGS}}
+                        </div>
+                    </div>
+
+                    <!-- Post Navigation -->
+                    <div class="post-navigation">
+                        <div class="post-nav-item post-nav-prev">
+                            <a href="{{PREV_POST_URL}}" class="post-nav-link">
+                                <span class="post-nav-label">Předchozí článek</span>
+                                <span class="post-nav-title">{{PREV_POST_TITLE}}</span>
+                            </a>
+                        </div>
+                        <div class="post-nav-item post-nav-next">
+                            <a href="{{NEXT_POST_URL}}" class="post-nav-link">
+                                <span class="post-nav-label">Následující článek</span>
+                                <span class="post-nav-title">{{NEXT_POST_TITLE}}</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- CTA Section -->
+                    <div class="post-cta">
+                        <div class="cta-content">
+                            <h3 class="cta-title">Hledáte nemovitost v Itálii?</h3>
+                            <p class="cta-description">Naši experti vám pomohou najít ideální dům nebo byt podle vašich představ.</p>
+                            <a href="listing.html" class="cta-button">Prohlédnout nabídku</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <aside class="post-sidebar">
+                    <!-- Related Posts -->
+                    <div class="sidebar-widget">
+                        <h4 class="widget-title">Související články</h4>
+                        <div class="related-posts" id="relatedPosts">
+                            <!-- Related posts will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Newsletter Signup -->
+                    <div class="sidebar-widget">
+                        <h4 class="widget-title">Newsletter</h4>
+                        <div class="newsletter-widget">
+                            <p class="newsletter-text">Získejte nejnovější články a tipy přímo do vaší schránky.</p>
+                            <form class="newsletter-form-sidebar">
+                                <input type="email" placeholder="Váš e-mail" class="newsletter-input-sidebar" required>
+                                <button type="submit" class="newsletter-btn-sidebar">Přihlásit se</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Popular Tags -->
+                    <div class="sidebar-widget">
+                        <h4 class="widget-title">Populární štítky</h4>
+                        <div class="popular-tags">
+                            <a href="#" class="popular-tag">Toskánsko</a>
+                            <a href="#" class="popular-tag">Investice</a>
+                            <a href="#" class="popular-tag">Právo</a>
+                            <a href="#" class="popular-tag">Kuchyně</a>
+                            <a href="#" class="popular-tag">Kultura</a>
+                            <a href="#" class="popular-tag">Daně</a>
+                            <a href="#" class="popular-tag">Výběr nemovitosti</a>
+                            <a href="#" class="popular-tag">Tradice</a>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <img src="Group 6.svg" alt="Domy v Itálii" class="footer-logo-image">
+                    </div>
+                    <p class="footer-description">
+                        Pomáháme najít váš vysněný dům v Itálii. Profesionální služby, osobní přístup.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Navigace</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html">Domov</a></li>
+                        <li><a href="listing.html">Nabídka</a></li>
+                        <li><a href="#">O nás</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li><a href="#">Kontakt</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Kontakt</h4>
+                    <ul class="footer-contacts">
+                        <li>info@domyvitalii.cz</li>
+                        <li>+420 123 456 789</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Domy v Itálii. Všechna práva vyhrazena.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="blog-post-script.js"></script>
+</body>
+</html> 

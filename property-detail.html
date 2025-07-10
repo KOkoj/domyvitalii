@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vila s výhledem na moře - Toskánsko | Domy v Itálii</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="property-detail-styles.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+</head>
+<body>
+    <!-- Combined Header and Top Bar -->
+    <header class="unified-header">
+        <div class="unified-container">
+            <!-- Left side: Logo with navigation popup and property navigation -->
+            <div class="header-left">
+                <!-- Logo with hover navigation -->
+                <div class="header-logo">
+                    <a href="index.html" class="logo-link">
+                        <img src="Group 6.svg" alt="Domy v Itálii" class="logo-image">
+                    </a>
+                    <!-- Navigation popup -->
+                    <nav class="header-nav-popup">
+                        <a href="index.html" class="nav-popup-link">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                            </svg>
+                            Domů
+                        </a>
+                        <a href="listing.html" class="nav-popup-link active">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 21V9l9-7 9 7v12h-4v-7h-10v7H3z"/>
+                            </svg>
+                            Vyhledávání
+                        </a>
+                        <a href="#" class="nav-popup-link">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            Oblíbené
+                        </a>
+                        <a href="#" class="nav-popup-link">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
+                            Kontakt
+                        </a>
+                        <!-- Actions section in popup -->
+                        <div class="nav-popup-actions">
+                            <a href="#" class="nav-popup-register-link">Registrovat</a>
+                            <button class="nav-popup-login-btn">Přihlásit se</button>
+                        </div>
+                    </nav>
+                </div>
+
+                <!-- Property navigation -->
+                <div class="property-navigation">
+                    <button class="back-to-listing" onclick="window.location.href='listing.html'">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+                        </svg>
+                        Zpět na výpis
+                    </button>
+                    <div class="nav-separator"></div>
+                    <button class="nav-arrow prev-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                        </svg>
+                        Předchozí
+                    </button>
+                    <span class="property-counter">1 z 999+</span>
+                    <button class="nav-arrow next-btn">
+                        Další
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right side: Action buttons -->
+            <div class="header-right">
+                <button class="header-action-btn edit-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+                    </svg>
+                </button>
+                <button class="header-action-btn share-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
+                    </svg>
+                </button>
+                <button class="header-action-btn save-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                    Uložit
+                </button>
+                <button class="header-action-btn copy-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>
+                    Kopírovat
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-left">
+
+        <!-- Image Gallery Section -->
+        <section class="gallery-section">
+            <div class="gallery-wrapper">
+                <!-- Photo Gallery Grid -->
+                <div class="gallery-grid">
+                    <div class="main-photo" onclick="window.location.href='property-gallery.html'">
+                        <!-- Gallery Button - positioned over main image -->
+                        <button class="view-all-photos" id="viewAllBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M3 3h6v6H3zm8 0h6v6h-6zm0 8h6v6h-6zM3 11h6v6H3z"/>
+                            </svg>
+                            Zobrazit všechny (25)
+                        </button>
+                        <img src="pexels-pixabay-210017.jpg" alt="Vila s výhledem na moře" loading="lazy">
+                        <div class="photo-overlay">
+                            <div class="photo-info">
+                                <span class="photo-title">Hlavní pohled</span>
+                                <span class="photo-category">Exteriér</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="side-photos">
+                        <div class="side-photo" onclick="window.location.href='property-gallery.html'">
+                            <img src="pexels-grisentig-4215104.jpg" alt="Interiér" loading="lazy">
+                            <div class="photo-overlay">
+                                <div class="photo-info">
+                                    <span class="photo-title">Ložnice</span>
+                                    <span class="photo-category">Ložnice</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="side-photo" onclick="window.location.href='property-gallery.html'">
+                            <img src="pexels-mickyiaia34-709478.jpg" alt="Zahrada" loading="lazy">
+                            <div class="photo-overlay">
+                                <div class="photo-info">
+                                    <span class="photo-title">Kuchyně</span>
+                                    <span class="photo-category">Kuchyně</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="side-photo more-photos" onclick="window.location.href='property-gallery.html'">
+                            <img src="pexels-alexandre-moreira-2527876-32622895.jpg" alt="Koupelna" loading="lazy">
+                            <div class="more-overlay">
+                                <div class="more-content">
+                                    <span class="more-number">+22</span>
+                                    <span class="more-text">další fotky</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Property Header -->
+                <div class="property-header">
+                    <div class="property-title-section">
+                        <div class="property-title-row">
+                            <div class="map-icon" onclick="scrollToMapSection()">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                </svg>
+                            </div>
+                            <div class="property-title-content">
+                                <h1>Vila s výhledem na moře</h1>
+                                <div class="property-location">
+                                    <span class="location-text">Cinque Terre • Toskánsko • Via Moře</span>
+                                </div>
+                            </div>
+                            <div class="property-price">
+                                <span class="price-amount">€850,000</span>
+                            </div>
+                        </div>
+
+                        <!-- Property Features Grid -->
+                        <div class="property-features-header">
+                            <div class="feature-item-header">
+                                <img src="Flat/apartment.svg" alt="Pokoje" class="feature-icon">
+                                <span class="feature-text">4 pokoje</span>
+                            </div>
+                            <div class="feature-item-header">
+                                <img src="region.svg" alt="Velikost" class="feature-icon">
+                                <span class="feature-text">280 m²</span>
+                            </div>
+                            <div class="feature-item-header">
+                                <img src="Flat/Shower.svg" alt="Koupelny" class="feature-icon">
+                                <span class="feature-text">2 koupelny</span>
+                            </div>
+                            <div class="feature-item-header">
+                                <img src="House.svg" alt="Patro" class="feature-icon">
+                                <span class="feature-text">Patro 2</span>
+                            </div>
+                            <div class="feature-item-header">
+                                <img src="Flat/Air conditioning.svg" alt="Klimatizace" class="feature-icon">
+                                <span class="feature-text">Klimatizace</span>
+                            </div>
+                            <div class="feature-item-header">
+                                <img src="Flat/Patio.svg" alt="Balkon" class="feature-icon">
+                                <span class="feature-text">Balkon</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Property Details Section -->
+            <section class="property-details-section">
+                <div class="property-main-info">
+
+
+
+                    <!-- Property Description -->
+                    <div class="property-description">
+                        <h2>Popis nemovitosti</h2>
+                        <p>Tato nádherná vila se nachází v jedné z nejkrásnějších oblastí Toskánska s úchvatným výhledem na Středozemní moře. Vila je postavena v tradičním toskánském stylu s moderními prvky a nabízí luxusní bydlení v klidném prostředí.</p>
+                        
+                        <p>Nemovitost se rozkládá na třech podlažích a zahrnuje prostorný obývací pokoj s krbem, plně vybavenou kuchyň, čtyři ložnice a tři koupelny. Každý pokoj má vlastní charakter a nabízí jedinečný výhled na okolní krajinu nebo moře.</p>
+
+                        <p>Velká zahrada s olivovými stromy a středomořskou vegetací poskytuje dokonalé místo pro relaxaci. Na pozemku se také nachází bazén a několik teras, které jsou ideální pro venkovní stolování a zábavu hostů.</p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="property-actions">
+                        <button class="property-action-btn primary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h8c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h4v2zm0-3H9V6h4v2z"/>
+                            </svg>
+                            Zobrazit půdorys
+                        </button>
+                        <button class="property-action-btn secondary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                            </svg>
+                            Virtuální prohlídka
+                        </button>
+                        <button class="property-action-btn secondary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4 0h-2v6h2v-6zm2-7h-3V2h-2v2H8V2H6v2H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H3V9h16v11z"/>
+                            </svg>
+                            Naplánovat prohlídku
+                        </button>
+                        <button class="property-action-btn secondary" onclick="scrollToComparisonSection()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9.01 14H2v2h7.01v3L13 15l-3.99-4v3zm5.98-1v-3H22V8h-7.01V5L11 9l3.99 4z"/>
+                            </svg>
+                            Porovnat s uloženými
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Map Section -->
+                <section class="map-section" id="map-section">
+                    <div class="map-header">
+                        <h2>Umístění</h2>
+                        <p>Cinque Terre, Toskánsko</p>
+                        <div class="map-controls">
+                            <button class="map-control-btn navigate-btn" onclick="openMapsNavigation()" title="Navigovat">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                </svg>
+                                Navigovat
+                            </button>
+                            <button class="map-control-btn expand-map-btn" onclick="expandMap()" title="Rozšířit mapu">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="map-container">
+                        <div id="propertyMap" class="property-map"></div>
+                        <div class="map-info">
+                            <div class="location-details">
+                                <h3>Vila s výhledem na moře</h3>
+                                <p class="address">Via Moře, Cinque Terre, Toskánsko, Itálie</p>
+                                <div class="location-features">
+                                    <div class="location-feature">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                                        </svg>
+                                        <span>5 min chůze na pláž</span>
+                                    </div>
+                                    <div class="location-feature">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 0 1 4 0v1h-4V6zm8 13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v10z"/>
+                                        </svg>
+                                        <span>10 min do centra města</span>
+                                    </div>
+                                    <div class="location-feature">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                                        </svg>
+                                        <span>Parkování k dispozici</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </div>
+
+        <!-- Right Column -->
+        <div class="content-right">
+            <!-- Action Sidebar -->
+            <div class="action-sidebar">
+
+                                    <!-- Contact Form -->
+                    <div class="contact-form-section">
+                    <h3>Kontaktovat makléře</h3>
+                    <div class="contact-form">
+                        <!-- Contact Reason Dropdown -->
+                        <div class="form-group">
+                            <div class="dropdown-container">
+                                <select class="form-dropdown" id="contactReason">
+                                    <option value="info" selected>Požádat o více informací</option>
+                                    <option value="photos">Požádat o více fotografií</option>
+                                    <option value="availability">Zeptat se na dostupnost</option>
+                                    <option value="visit">Naplánovat prohlídku</option>
+                                    <option value="other">Jiný</option>
+                                </select>
+                                <svg class="dropdown-icon" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M7 10l5 5 5-5z"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Message Text Area -->
+                        <div class="form-group">
+                            <textarea 
+                                class="form-textarea" 
+                                placeholder="Klikněte pro napsání zprávy..."
+                                id="messageText"
+                                rows="4">Dobrý den, mám zájem o tuto nemovitost. Rád bych získal více informací o ceně, dostupnosti a možnosti prohlídky. Děkuji.</textarea>
+                        </div>
+
+                        <!-- Contact Information Fields - Initially Hidden -->
+                        <div class="form-group expandable-field" style="display: none;">
+                            <input type="text" class="form-input" placeholder="Vaše jméno" id="userName">
+                        </div>
+
+                        <div class="form-group expandable-field" style="display: none;">
+                            <input type="email" class="form-input" placeholder="Váš email" id="userEmail">
+                        </div>
+
+                        <div class="form-group expandable-field" style="display: none;">
+                            <input type="tel" class="form-input" placeholder="Váš telefon" id="userPhone">
+                        </div>
+
+                        <!-- Privacy Checkbox - Initially Hidden -->
+                        <div class="form-group checkbox-group expandable-field" style="display: none;">
+                            <label class="checkbox-label">
+                                <input type="checkbox" class="form-checkbox" id="privacyConsent">
+                                <span class="checkbox-custom"></span>
+                                <span class="checkbox-text">Souhlasím s <a href="#" class="privacy-link">podmínkami</a> a <a href="#" class="privacy-link">ochranou údajů</a></span>
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button class="form-submit-btn" onclick="sendContactForm()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                            </svg>
+                            ODESLAT ZPRÁVU
+                        </button>
+
+                        <!-- Alternative Actions - Initially Hidden -->
+                        <div class="form-divider expandable-field" style="display: none;">
+                            <span>Nebo</span>
+                        </div>
+
+                        <div class="alternative-actions expandable-field" style="display: none;">
+                            <button class="alt-action-btn" onclick="requestVisit()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
+                                </svg>
+                                POŽÁDAT O PROHLÍDKU
+                            </button>
+                            <button class="alt-action-btn" onclick="requestPrice()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
+                                </svg>
+                                NAVRHNOUT CENU
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Agent -->
+                <div class="contact-agent">
+                    <div class="agent-info">
+                        <img src="115ed46b22c2450c4676c4fef0f07083084315bc.jpg" alt="Realitní makléř" class="agent-photo">
+                        <div class="agent-details">
+                            <h4>Marco Rossi</h4>
+                            <p>Specialista na Toskánsko</p>
+                        </div>
+                    </div>
+                    <div class="contact-buttons">
+                        <button class="contact-btn call-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                            </svg>
+                            Zavolat
+                        </button>
+                        <button class="contact-btn email-btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                            </svg>
+                            Email
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Region Information -->
+            <div class="region-info">
+                <div class="region-header">
+                    <h2>O regionu Toskánsko</h2>
+                    <p>Poznejte krásy jednoho z nejoblíbenějších regionů Itálie</p>
+                </div>
+
+                <div class="region-gallery">
+                    <div class="region-image main">
+                        <img src="pexels-manousos-kampanellis-56682656-27377438.jpg" alt="Toskánská krajina">
+                        <div class="image-caption">Typická toskánská krajina s vinicemi</div>
+                    </div>
+                    <div class="region-images-grid">
+                        <div class="region-image">
+                            <img src="pexels-small-steps-898071686-19990849.jpg" alt="Florencie">
+                            <div class="image-caption">Florencie - hlavní město</div>
+                        </div>
+                        <div class="region-image">
+                            <img src="pexels-josh-hild-1270765-2422259 (1).jpg" alt="Vinařství">
+                            <div class="image-caption">Slavná toskánská vinařství</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="region-description">
+                    <p>Toskánsko je region v centrální Itálii, který je proslulý svou úchvatnou krajinou, historickými městy a vynikající gastronomií. Region nabízí dokonalou kombinaci kulturního dědictví, přírodních krás a moderního komfortu.</p>
+                    
+                    <div class="region-highlights">
+                        <div class="highlight-item">
+                            <h4>🏛️ Kultura & Historie</h4>
+                            <p>Domov renesance, Florencie, Siena, Pisa</p>
+                        </div>
+                        <div class="highlight-item">
+                            <h4>🍷 Gastronomie</h4>
+                            <p>Světoznámá vína Chianti, olivový olej, místní speciality</p>
+                        </div>
+                        <div class="highlight-item">
+                            <h4>🌄 Příroda</h4>
+                            <p>Vinice, olivové háje, středomořské pobřeží</p>
+                        </div>
+                        <div class="highlight-item">
+                            <h4>🏖️ Pláže</h4>
+                            <p>Cinque Terre, Versilia, ostrov Elba</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Property Comparison Section -->
+    <section class="property-comparison-section" id="comparisonSection">
+        <div class="comparison-container-wrapper">
+            <div class="comparison-header">
+                <h2>Porovnání s uloženými nemovitostmi</h2>
+                <p>Porovnejte tuto nemovitost s těmi, které jste si již uložili</p>
+            </div>
+            
+            <div class="comparison-container">
+                <!-- Current Property -->
+                <div class="comparison-property current-property">
+                    <div class="property-header">
+                        <img src="pexels-pixabay-210017.jpg" alt="Aktuální nemovitost" class="property-thumb">
+                        <div class="property-info">
+                            <h3>Vila s výhledem na moře</h3>
+                            <p class="property-location">Cinque Terre, Toskánsko</p>
+                            <span class="current-badge">Aktuálně prohlížíte</span>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Cena</span>
+                            <div class="stat-right">
+                                <span class="stat-value">€850,000</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Velikost</span>
+                            <div class="stat-right">
+                                <span class="stat-value">280 m²</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Pokoje</span>
+                            <div class="stat-right">
+                                <span class="stat-value">4</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Koupelny</span>
+                            <div class="stat-right">
+                                <span class="stat-value">2</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Patro</span>
+                            <div class="stat-right">
+                                <span class="stat-value">2. patro</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Typ</span>
+                            <div class="stat-right">
+                                <span class="stat-value">Vila</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Rok stavby</span>
+                            <div class="stat-right">
+                                <span class="stat-value">1995</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Cena za m²</span>
+                            <div class="stat-right">
+                                <span class="stat-value">€3,036</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparison Arrow -->
+                <div class="comparison-vs">
+                    <div class="vs-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M9.01 14H2v2h7.01v3L13 15l-3.99-4v3zm5.98-1v-3H22V8h-7.01V5L11 9l3.99 4z"/>
+                        </svg>
+                    </div>
+                    <span>VS</span>
+                </div>
+
+                <!-- Saved Property -->
+                <div class="comparison-property saved-property" onclick="window.location.href='property-detail.html'">
+                    <div class="property-header">
+                        <img src="pexels-grisentig-4215104.jpg" alt="Uložená nemovitost" class="property-thumb">
+                        <div class="property-info">
+                            <h3>Historická vila s vinicí</h3>
+                            <p class="property-location">Chianti, Toskánsko</p>
+                            <span class="saved-badge">Uloženo před 3 dny</span>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">Cena</span>
+                            <div class="stat-right">
+                                <span class="stat-value better">€920,000</span>
+                                <span class="stat-diff worse">+€70,000</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Velikost</span>
+                            <div class="stat-right">
+                                <span class="stat-value better">320 m²</span>
+                                <span class="stat-diff better">+40 m²</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Pokoje</span>
+                            <div class="stat-right">
+                                <span class="stat-value better">5</span>
+                                <span class="stat-diff better">+1</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Koupelny</span>
+                            <div class="stat-right">
+                                <span class="stat-value better">3</span>
+                                <span class="stat-diff better">+1</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Patro</span>
+                            <div class="stat-right">
+                                <span class="stat-value">1. patro</span>
+                                <span class="stat-diff neutral">-1 patro</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Typ</span>
+                            <div class="stat-right">
+                                <span class="stat-value">Vila</span>
+                                <span class="stat-diff neutral">Stejný</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Rok stavby</span>
+                            <div class="stat-right">
+                                <span class="stat-value">1890</span>
+                                <span class="stat-diff neutral">-105 let</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Cena za m²</span>
+                            <div class="stat-right">
+                                <span class="stat-value worse">€2,875</span>
+                                <span class="stat-diff better">-€161</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comparison-actions">
+                <button class="comparison-action-btn secondary" onclick="showAllSavedComparisons()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 3h6v6H3zm8 0h6v6h-6zm0 8h6v6h-6zM3 11h6v6H3z"/>
+                    </svg>
+                    Porovnat se všemi uloženými (3)
+                </button>
+                <button class="comparison-action-btn primary" onclick="openDetailedComparison()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 2 2h8c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h4v2zm0-3H9V6h4v2z"/>
+                    </svg>
+                    Detailní porovnání
+                </button>
+            </div>
+
+            <div class="comparison-summary">
+                <div class="summary-item better">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                    </svg>
+                    <span>Tato nemovitost má lepší cenu za m²</span>
+                </div>
+                <div class="summary-item worse">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                    </svg>
+                    <span>Menší rozloha a méně pokojů než uložená vila</span>
+                </div>
+                <div class="summary-item neutral">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                    </svg>
+                    <span>Modernější stavba (o 105 let novější)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Similar Properties Section -->
+    <section class="similar-properties-section">
+        <div class="similar-properties-container">
+            <div class="section-header">
+                <h2>Podobné nemovitosti</h2>
+                <p>Další zajímavé nabídky v oblasti Toskánska</p>
+            </div>
+            
+            <div class="similar-properties-grid">
+                <!-- Property 1 -->
+                <div class="property-card" onclick="window.location.href='property-detail.html'">
+                    <div class="property-image">
+                        <img src="pexels-grisentig-4215104.jpg" alt="Historická vila s vinicí" loading="lazy">
+                        <div class="property-badge location mountains">
+                            <svg class="locality-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.5 16.5L12 13L15.5 16.5L19 13L22.5 16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M1.5 16.5L5 13L8.5 16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>Chianti</span>
+                        </div>
+                        
+                        <!-- Views count in top right -->
+                        <div class="property-views">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 12S5 4 12 4S23 12 23 12S19 20 12 20S1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>1,256</span>
+                        </div>
+                        
+                        <!-- Price overlay -->
+                        <div class="property-overlay-info">
+                            <div class="property-price-main">€920,000</div>
+                        </div>
+                    </div>
+                    <div class="property-content">
+                        <h3 class="property-title">Historická vila s vinicí</h3>
+                        <!-- Property details grid -->
+                        <div class="property-details">
+                            <div class="detail-item type">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 21L21 21L21 8L12 2L3 8L3 21Z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M9 21V12H15V21" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Vila</span>
+                            </div>
+                            
+                            <div class="detail-item size">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="#6B7280" stroke-width="2"/>
+                                    <path d="M9 9H15V15H9V9Z" stroke="#6B7280" stroke-width="2"/>
+                                </svg>
+                                <span>320 m²</span>
+                            </div>
+                            
+                            <div class="detail-item rooms">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M9 22V12H15V22" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>5 pokojů</span>
+                            </div>
+                            
+                            <div class="detail-item bathrooms">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 7H17V17H7V7Z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M10 4V7H14V4" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="12" cy="12" r="2" stroke="#6B7280" stroke-width="2"/>
+                                </svg>
+                                <span>3 koupelny</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Action button -->
+                        <button class="property-btn">Zobrazit detail</button>
+                    </div>
+                </div>
+
+                <!-- Property 2 -->
+                <div class="property-card" onclick="window.location.href='property-detail.html'">
+                    <div class="property-image">
+                        <img src="pexels-mickyiaia34-709478.jpg" alt="Moderní vila s bazénem" loading="lazy">
+                        <div class="property-badge location city">
+                            <svg class="locality-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M17 22V16C17 14.1144 17 13.1716 16.4142 12.5858C15.8284 12 14.8856 12 13 12H11C9.11438 12 8.17157 12 7.58579 12.5858C7 13.1716 7 14.1144 7 16V22" stroke="currentColor" stroke-width="1.5"/>
+                                <path opacity="0.5" d="M21 22.0001V7.77207C21 6.43122 21 5.7608 20.6439 5.24688C20.2877 4.73296 19.66 4.49756 18.4045 4.02675C15.9492 3.10604 14.7216 2.64568 13.8608 3.24222C13 3.83876 13 5.14986 13 7.77207V12.0001" stroke="currentColor" stroke-width="1.5"/>
+                                <path d="M22 22L2 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            </svg>
+                            <span>Lucca</span>
+                        </div>
+                        
+                        <!-- Views count in top right -->
+                        <div class="property-views">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 12S5 4 12 4S23 12 23 12S19 20 12 20S1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>856</span>
+                        </div>
+                        
+                        <!-- Price overlay -->
+                        <div class="property-overlay-info">
+                            <div class="property-price-main">€750,000</div>
+                        </div>
+                    </div>
+                    <div class="property-content">
+                        <h3 class="property-title">Moderní vila s bazénem</h3>
+                        <!-- Property details grid -->
+                        <div class="property-details">
+                            <div class="detail-item type">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 21L21 21L21 8L12 2L3 8L3 21Z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M9 21V12H15V21" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Vila</span>
+                            </div>
+                            
+                            <div class="detail-item size">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="#6B7280" stroke-width="2"/>
+                                    <path d="M9 9H15V15H9V9Z" stroke="#6B7280" stroke-width="2"/>
+                                </svg>
+                                <span>250 m²</span>
+                            </div>
+                            
+                            <div class="detail-item rooms">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M9 22V12H15V22" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>4 pokoje</span>
+                            </div>
+                            
+                            <div class="detail-item bathrooms">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 7H17V17H7V7Z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M10 4V7H14V4" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="12" cy="12" r="2" stroke="#6B7280" stroke-width="2"/>
+                                </svg>
+                                <span>2 koupelny</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Action button -->
+                        <button class="property-btn">Zobrazit detail</button>
+                    </div>
+                </div>
+
+                <!-- Property 3 -->
+                <div class="property-card" onclick="window.location.href='property-detail.html'">
+                    <div class="property-image">
+                        <img src="pexels-alexandre-moreira-2527876-32622895.jpg" alt="Rustikální dům s olivovými háji" loading="lazy">
+                        <div class="property-badge location mountains">
+                            <svg class="locality-icon" width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8.5 16.5L12 13L15.5 16.5L19 13L22.5 16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M1.5 16.5L5 13L8.5 16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>Siena</span>
+                        </div>
+                        
+                        <!-- Views count in top right -->
+                        <div class="property-views">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 12S5 4 12 4S23 12 23 12S19 20 12 20S1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>623</span>
+                        </div>
+                        
+                        <!-- Price overlay -->
+                        <div class="property-overlay-info">
+                            <div class="property-price-main">€580,000</div>
+                        </div>
+                    </div>
+                    <div class="property-content">
+                        <h3 class="property-title">Rustikální dům s olivovými háji</h3>
+                        <!-- Property details grid -->
+                        <div class="property-details">
+                            <div class="detail-item type">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 21L21 21L21 8L12 2L3 8L3 21Z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M9 21V12H15V21" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>Dům</span>
+                            </div>
+                            
+                            <div class="detail-item size">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" stroke="#6B7280" stroke-width="2"/>
+                                    <path d="M9 9H15V15H9V9Z" stroke="#6B7280" stroke-width="2"/>
+                                </svg>
+                                <span>180 m²</span>
+                            </div>
+                            
+                            <div class="detail-item rooms">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3 9L12 2L21 9V20C21 20.5304 20.7893 21.0391 20.4142 21.4142C20.0391 21.7893 19.5304 22 19 22H5C4.46957 22 3.96086 21.7893 3.58579 21.4142C3.21071 21.0391 3 20.5304 3 20V9Z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M9 22V12H15V22" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <span>3 pokoje</span>
+                            </div>
+                            
+                            <div class="detail-item bathrooms">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 7H17V17H7V7Z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <path d="M10 4V7H14V4" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="12" cy="12" r="2" stroke="#6B7280" stroke-width="2"/>
+                                </svg>
+                                <span>2 koupelny</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Action button -->
+                        <button class="property-btn">Zobrazit detail</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="view-more-properties">
+                <button class="view-more-btn" onclick="window.location.href='listing.html'">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 3h6v6H3zm8 0h6v6h-6zm0 8h6v6h-6zM3 11h6v6H3z"/>
+                    </svg>
+                    Zobrazit všechny nemovitosti
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SEO Keywords Section -->
+    <section class="keywords-section">
+        <div class="keywords-container">
+            <h3>Klíčová slova</h3>
+            <div class="keywords-grid">
+                <span class="keyword-tag">vila Toskánsko</span>
+                <span class="keyword-tag">nemovitosti Itálie</span>
+                <span class="keyword-tag">dům s výhledem na moře</span>
+                <span class="keyword-tag">luxusní vila</span>
+                <span class="keyword-tag">Cinque Terre</span>
+                <span class="keyword-tag">italské nemovitosti</span>
+                <span class="keyword-tag">vila s bazénem</span>
+                <span class="keyword-tag">toskánský styl</span>
+                <span class="keyword-tag">středomořské bydlení</span>
+                <span class="keyword-tag">investice do nemovitostí</span>
+                <span class="keyword-tag">dovolenkový dům</span>
+                <span class="keyword-tag">olivové háje</span>
+                <span class="keyword-tag">italská riviéra</span>
+                <span class="keyword-tag">historická vila</span>
+                <span class="keyword-tag">panoramatický výhled</span>
+                <span class="keyword-tag">terasa s výhledem</span>
+                <span class="keyword-tag">zahrada se stromy</span>
+                <span class="keyword-tag">klidné prostředí</span>
+                <span class="keyword-tag">tradičná architektura</span>
+                <span class="keyword-tag">exkluzivní lokalita</span>
+                <span class="keyword-tag">přírodní krása</span>
+                <span class="keyword-tag">italský životní styl</span>
+                <span class="keyword-tag">víkendový dům</span>
+                <span class="keyword-tag">investiční příležitost</span>
+                <span class="keyword-tag">přímořské bydlení</span>
+                <span class="keyword-tag">klimatizace</span>
+                <span class="keyword-tag">parkování</span>
+                <span class="keyword-tag">balkon</span>
+                <span class="keyword-tag">koupelny</span>
+                <span class="keyword-tag">ložnice</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="property-detail-script.js"></script>
+</body>
+</html> 
