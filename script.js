@@ -1,4 +1,20 @@
+// Configuration for API endpoints
+const API_CONFIG = {
+    // Automatically detect if we're in development or production
+    baseURL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? 'http://localhost:3001/api'  // Local development
+        : 'https://your-railway-backend.up.railway.app/api', // Production - UPDATE THIS URL
+    
+    // Fallback for debugging
+    get apiUrl() {
+        console.log('Using API URL:', this.baseURL);
+        return this.baseURL;
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Environment detected:', window.location.hostname);
+    console.log('API URL will be:', API_CONFIG.apiUrl);
     
     // Custom Dropdown functionality
     function initializeCustomDropdowns() {
@@ -204,7 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 
                 // Send to backend API
-                fetch('/api/inquiries', {
+                fetch(`${API_CONFIG.apiUrl}/inquiries`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -558,7 +574,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 
                 // Send to backend API
-                fetch('/api/inquiries', {
+                fetch(`${API_CONFIG.apiUrl}/inquiries`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

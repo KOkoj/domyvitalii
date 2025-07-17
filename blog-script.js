@@ -1,3 +1,17 @@
+// Configuration for API endpoints
+const API_CONFIG = {
+    // Automatically detect if we're in development or production
+    baseURL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+        ? 'http://localhost:3001/api'  // Local development
+        : 'https://your-railway-backend.up.railway.app/api', // Production - UPDATE THIS URL
+    
+    // Fallback for debugging
+    get apiUrl() {
+        console.log('Using API URL:', this.baseURL);
+        return this.baseURL;
+    }
+};
+
 // Blog functionality
 class BlogManager {
     constructor() {
@@ -351,16 +365,16 @@ class BlogManager {
         // Show loading state
         this.showNotification('Přihlašování k odběru...', 'info');
         
-        // Send to backend API
-        fetch('/api/inquiries', {
+        // Send to backend API (Newsletter subscription)
+        fetch(`${API_CONFIG.apiUrl}/newsletter/subscribe`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
                 email: email,
-                type: 'NEWSLETTER',
-                message: 'Přihlášení k odběru newsletteru'
+                name: '', // Optional
+                source: 'blog'
             })
         })
         .then(response => {
@@ -373,7 +387,7 @@ class BlogManager {
             this.showNotification('Děkujeme za přihlášení k odběru!', 'success');
             console.log('Newsletter subscription successful:', data);
             
-            // Clear the form
+            // Clear the email input
             e.target.querySelector('input[type="email"]').value = '';
         })
         .catch(error => {

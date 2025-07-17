@@ -1,21 +1,33 @@
 # Netlify configuration for Domy v Italii Admin Dashboard
 
 [build]
-  # Build command
-  command = "npm run build"
-  
-  # Output directory
   publish = "dist"
-  
-  # Node.js version
-  environment = { NODE_VERSION = "18" }
+  command = "npm run build"
 
 [build.environment]
-  # Build-time environment variables
-  NODE_ENV = "production"
-  VITE_API_URL = "https://your-railway-app.railway.app/api"
+  NODE_VERSION = "18"
 
-# Headers for security and performance
+# Redirects for SPA routing - all frontend routes should go to index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin"]}
+
+# Handle admin dashboard routes
+[[redirects]]
+  from = "/admin/*"
+  to = "/index.html"
+  status = 200
+
+# API routes - redirect to Railway backend (optional fallback)
+# [[redirects]]
+#   from = "/api/*"
+#   to = "https://your-railway-backend.up.railway.app/api/:splat"
+#   status = 200
+#   force = true
+
+# Security headers
 [[headers]]
   for = "/*"
   [headers.values]
@@ -23,22 +35,9 @@
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://your-railway-app.railway.app https://res.cloudinary.com;"
 
 # Cache static assets
 [[headers]]
   for = "/assets/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-# Redirect rules for SPA
-[[redirects]]
-  from = "/api/*"
-  to = "https://your-railway-app.railway.app/api/:splat"
-  status = 200
-  force = false
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200 
+    Cache-Control = "public, max-age=31536000, immutable" 
