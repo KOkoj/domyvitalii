@@ -12,6 +12,7 @@ import { Menu } from '@headlessui/react'
 import { useProperties, useDeleteProperty } from '@/hooks/useApi'
 import { DataTable } from '@/components/ui/DataTable'
 import { Button } from '@/components/ui/Button'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { PropertyQuickFilters } from '@/components/properties/PropertyQuickFilters'
 import { PropertyBulkActions } from '@/components/properties/PropertyBulkActions'
 import { formatCurrency, formatDate, getStatusColor, cn } from '@/lib/utils'
@@ -23,8 +24,28 @@ export default function PropertiesPage() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [typeFilter, setTypeFilter] = useState('all')
   const [selectedRows, setSelectedRows] = useState<Record<string, boolean>>({})
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [propertyToDelete, setPropertyToDelete] = useState<Property | null>(null)
 
   const deleteProperty = useDeleteProperty()
+
+  const handleDeleteClick = (property: Property) => {
+    setPropertyToDelete(property)
+    setShowDeleteDialog(true)
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!propertyToDelete) return
+    
+    try {
+      await deleteProperty.mutateAsync(propertyToDelete.id)
+    } catch (error) {
+      // Error is already handled by the mutation hook
+    } finally {
+      setPropertyToDelete(null)
+      setShowDeleteDialog(false)
+    }
+  }
 
   // Fetch properties with filters
   const { data, isLoading, error } = useProperties({
@@ -181,11 +202,7 @@ export default function PropertiesPage() {
               <Menu.Item>
                 {({ active }) => (
                   <button
-                    onClick={() => {
-                      if (confirm('Opravdu chcete smazat tuto nemovitost?')) {
-                        deleteProperty.mutate(row.original.id)
-                      }
-                    }}
+                    onClick={() => handleDeleteClick(row.original)}
                     className={cn(
                       'flex w-full items-center px-4 py-2 text-sm',
                       active ? 'bg-gray-100 text-red-900' : 'text-red-700'
@@ -249,7 +266,7 @@ export default function PropertiesPage() {
         <PropertyBulkActions
           selectedCount={selectedCount}
           onBulkAction={(action) => {
-            console.log('Bulk action:', action, selectedRows)
+    
             if (action === 'clear') {
               setSelectedRows({})
             }
@@ -303,6 +320,18 @@ export default function PropertiesPage() {
           <div className="text-sm text-gray-600">Pronajmané</div>
         </div>
       </div>
+
+      {/* Confirmation Dialog */}
+      <ConfirmDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        title="Smazat nemovitost"
+        description={`Opravdu chcete smazat nemovitost "${propertyToDelete?.title}"? Tato akce je nevratná.`}
+        confirmText="Smazat"
+        cancelText="Zrušit"
+        variant="destructive"
+        onConfirm={handleDeleteConfirm}
+      />
     </div>
   )
 } 

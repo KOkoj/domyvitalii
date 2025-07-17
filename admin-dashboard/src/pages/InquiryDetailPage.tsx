@@ -12,6 +12,7 @@ import {
 } from '@heroicons/react/24/outline';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 import { useInquiry, useUpdateInquiry } from '../hooks/useApi';
+import { toast } from 'react-hot-toast';
 import type { Inquiry } from '../types';
 
 const InquiryDetailPage: React.FC = () => {
@@ -40,7 +41,6 @@ const InquiryDetailPage: React.FC = () => {
     
     try {
       // In a real app, you would send the reply via email API here
-      console.log('Sending reply:', replyMessage);
       
       // Update inquiry status to "RESPONDED"
       await updateInquiryMutation.mutateAsync({
@@ -52,10 +52,10 @@ const InquiryDetailPage: React.FC = () => {
       setIsReplying(false);
       
       // Show success message
-      alert('Odpověď byla odeslána!');
+      toast.success('Odpověď byla odeslána!');
     } catch (error) {
-      console.error('Failed to send reply:', error);
-      alert('Chyba při odesílání odpovědi');
+      // Error is handled by the mutation hook
+      toast.error('Chyba při odesílání odpovědi');
     }
   };
 

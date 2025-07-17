@@ -195,15 +195,42 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 
-                // Store data for form page
+                // Prepare data for API
                 const inquiryData = {
                     email: email,
-                    interest: interest,
-                    timestamp: new Date().toISOString()
+                    type: 'GENERAL',
+                    message: `Zájem o: ${interest}`,
+                    interestType: interest
                 };
                 
-                // Store in sessionStorage for the form page
-                sessionStorage.setItem('inquiryData', JSON.stringify(inquiryData));
+                // Send to backend API
+                fetch('/api/inquiries', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(inquiryData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    showNotification('Zájem byl zaregistrován! Brzy se vám ozveme.', 'success');
+                    console.log('Interest submitted successfully:', data);
+                    
+                    // Store data for form page as backup
+                    sessionStorage.setItem('inquiryData', JSON.stringify(inquiryData));
+                })
+                .catch(error => {
+                    console.error('Error submitting interest:', error);
+                    showNotification('Chyba při odesílání. Zkuste to prosím znovu.', 'error');
+                    
+                    // Store in sessionStorage as fallback
+                    sessionStorage.setItem('inquiryData', JSON.stringify(inquiryData));
+                });
                 
                 // Show success message and redirect
                 showNotification('Přesměrování na formulář...', 'success');
@@ -514,19 +541,51 @@ document.addEventListener('DOMContentLoaded', function() {
         const phone = document.getElementById('inquiry-phone')?.value.trim() || '';
         const budget = document.getElementById('inquiry-budget')?.value || '';
         const message = document.getElementById('inquiry-message')?.value.trim() || '';
-        
+
         if (name && email) {
             if (isValidEmail(email)) {
-                // Simulate form submission
-                showNotification('Poptávka byla úspěšně odeslána! Brzy se vám ozveme.', 'success');
-                console.log('Inquiry submitted:', { name, email, phone, budget, message });
+                // Show loading state
+                showNotification('Odesílání poptávky...', 'info');
                 
-                // Clear form
-                document.getElementById('inquiry-name').value = '';
-                document.getElementById('inquiry-email').value = '';
-                document.getElementById('inquiry-phone').value = '';
-                document.getElementById('inquiry-budget').value = '';
-                document.getElementById('inquiry-message').value = '';
+                // Prepare data for API
+                const inquiryData = {
+                    name: name,
+                    email: email,
+                    phone: phone || null,
+                    message: message || `Zájem o nemovitosti v kategorii: ${budget}`,
+                    type: 'PROPERTY',
+                    budgetRange: budget || null
+                };
+                
+                // Send to backend API
+                fetch('/api/inquiries', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(inquiryData)
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    showNotification('Poptávka byla úspěšně odeslána! Brzy se vám ozveme.', 'success');
+                    console.log('Inquiry submitted successfully:', data);
+                    
+                    // Clear form
+                    document.getElementById('inquiry-name').value = '';
+                    document.getElementById('inquiry-email').value = '';
+                    if (document.getElementById('inquiry-phone')) document.getElementById('inquiry-phone').value = '';
+                    if (document.getElementById('inquiry-budget')) document.getElementById('inquiry-budget').value = '';
+                    if (document.getElementById('inquiry-message')) document.getElementById('inquiry-message').value = '';
+                })
+                .catch(error => {
+                    console.error('Error submitting inquiry:', error);
+                    showNotification('Chyba při odesílání poptávky. Zkuste to prosím znovu.', 'error');
+                });
             } else {
                 showNotification('Prosím zadejte platnou emailovou adresu', 'error');
             }

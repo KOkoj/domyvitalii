@@ -307,9 +307,22 @@ class BlogManager {
         // For now, just log the post - in future this will navigate to post page
         console.log('Opening post:', post);
         
-        // Create a simple modal or navigate to post page
-        // This is a placeholder - you'll implement actual post pages later
-        alert(`Článek: ${post.title}\n\nToto je ukázka - plná implementace článku bude následovat.`);
+        // Navigate to the blog post page
+        const slug = post.slug || post.title.toLowerCase().replace(/\s+/g, '-');
+        const postUrl = `/blog/${slug}.html`;
+        
+        // Check if the post page exists, if not show coming soon message
+        fetch(postUrl, { method: 'HEAD' })
+            .then(response => {
+                if (response.ok) {
+                    window.location.href = postUrl;
+                } else {
+                    this.showNotification(`Článek "${post.title}" bude brzy dostupný!`, 'info');
+                }
+            })
+            .catch(() => {
+                this.showNotification(`Článek "${post.title}" bude brzy dostupný!`, 'info');
+            });
     }
     
     formatDate(dateString) {
@@ -326,26 +339,107 @@ class BlogManager {
         const email = formData.get('email') || e.target.querySelector('input[type="email"]').value;
         
         if (!email) {
-            alert('Prosím zadejte váš e-mail.');
+            this.showNotification('Prosím zadejte váš e-mail.', 'error');
             return;
         }
         
         if (!this.isValidEmail(email)) {
-            alert('Prosím zadejte platný e-mail.');
+            this.showNotification('Prosím zadejte platný e-mail.', 'error');
             return;
         }
         
-        // Here you would normally send the email to your backend
-        console.log('Newsletter subscription:', email);
-        alert('Děkujeme za přihlášení k odběru!');
+        // Show loading state
+        this.showNotification('Přihlašování k odběru...', 'info');
         
-        // Clear the form
-        e.target.querySelector('input[type="email"]').value = '';
+        // Send to backend API
+        fetch('/api/inquiries', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: email,
+                type: 'NEWSLETTER',
+                message: 'Přihlášení k odběru newsletteru'
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            this.showNotification('Děkujeme za přihlášení k odběru!', 'success');
+            console.log('Newsletter subscription successful:', data);
+            
+            // Clear the form
+            e.target.querySelector('input[type="email"]').value = '';
+        })
+        .catch(error => {
+            console.error('Error subscribing to newsletter:', error);
+            this.showNotification('Chyba při přihlašování. Zkuste to prosím znovu.', 'error');
+        });
     }
     
     isValidEmail(email) {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
+    }
+    
+    showNotification(message, type = 'info') {
+        // Remove existing notifications
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(notification => notification.remove());
+        
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.textContent = message;
+        
+        // Add styles
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${this.getNotificationColor(type)};
+            color: white;
+            padding: 15px 25px;
+            border-radius: 7px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 600;
+            max-width: 400px;
+            word-wrap: break-word;
+            animation: slideIn 0.3s ease-out;
+        `;
+        
+        // Add to DOM
+        document.body.appendChild(notification);
+        
+        // Auto remove after 4 seconds
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease-in';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 300);
+        }, 4000);
+    }
+    
+    getNotificationColor(type) {
+        switch (type) {
+            case 'success':
+                return '#3E6343';
+            case 'error':
+                return '#E6904B';
+            case 'info':
+                return '#5B9162';
+            default:
+                return '#333333';
+        }
     }
 }
 

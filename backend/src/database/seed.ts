@@ -4,17 +4,61 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: ['query', 'info', 'warn', 'error'],
+});
+
+// Test database connection
+async function testConnection() {
+  try {
+    console.log('🔌 Testing database connection...');
+    await prisma.$queryRaw`SELECT 1 as test`;
+    console.log('✅ Database connection successful');
+    return true;
+  } catch (error) {
+    console.error('❌ Database connection failed:');
+    console.error('Error details:', error);
+    
+    if (!process.env.DATABASE_URL) {
+      console.error('\n💡 Missing DATABASE_URL environment variable.');
+      console.error('Please set DATABASE_URL in your .env file or environment.');
+      console.error('Format: postgresql://username:password@host:port/database');
+    } else {
+      console.error('\n💡 Check your DATABASE_URL format and credentials.');
+      console.error('Current DATABASE_URL format:', process.env.DATABASE_URL?.replace(/\/\/.*@/, '//***:***@'));
+    }
+    
+    return false;
+  }
+}
 
 async function main() {
   console.log('🌱 Starting database seed...');
+  console.log('Environment:', process.env.NODE_ENV || 'development');
+  
+  // Test connection first
+  const connectionSuccess = await testConnection();
+  if (!connectionSuccess) {
+    console.error('❌ Cannot proceed without database connection.');
+    process.exit(1);
+  }
 
   try {
+    // Check if database is empty or already seeded
+    const existingUsersCount = await prisma.user.count();
+    const existingPropertiesCount = await prisma.property.count();
+    
+    if (existingUsersCount > 0 || existingPropertiesCount > 0) {
+      console.log(`ℹ️  Database already contains data (${existingUsersCount} users, ${existingPropertiesCount} properties)`);
+      console.log('Proceeding with upsert operations...');
+    }
+
     // Create admin user
     const adminEmail = process.env.ADMIN_EMAIL || 'admin@domyvitalii.cz';
     const adminPassword = process.env.ADMIN_PASSWORD || 'AdminPassword123!';
     const adminName = process.env.ADMIN_NAME || 'Admin User';
 
+    console.log('👤 Creating admin user...');
     const existingAdmin = await prisma.user.findUnique({
       where: { email: adminEmail },
     });
@@ -39,6 +83,7 @@ async function main() {
     }
 
     // Create sample settings
+    console.log('⚙️  Creating default settings...');
     const defaultSettings = [
       { key: 'site_name', value: 'Domy v Italii', type: 'STRING' },
       { key: 'site_description', value: 'Váš průvodce italskými nemovitostmi', type: 'STRING' },
@@ -60,7 +105,17 @@ async function main() {
 
     console.log('✅ Default settings created');
 
-    // Create sample property types and regions data
+    // Get admin user for relations
+    const adminUser = await prisma.user.findUnique({
+      where: { email: adminEmail },
+    });
+
+    if (!adminUser) {
+      throw new Error('Admin user not found after creation');
+    }
+
+    // Create sample properties
+    console.log('🏠 Creating sample properties...');
     const sampleProperties = [
       {
         title: 'Luxusní vila v Toskánsku',
@@ -84,7 +139,7 @@ async function main() {
         metaDescription: 'Objevte tuto nádhernou vilu v Toskánsku s výhledem na vinice. Ideální investice do italských nemovitostí.',
         isPublished: true,
         publishedAt: new Date(),
-        authorId: '', // Will be set below
+        authorId: adminUser.id,
       },
       {
         title: 'Moderní apartmán v Římě',
@@ -107,7 +162,7 @@ async function main() {
         metaDescription: 'Stylový apartmán v centru Říma. Ideální pro bydlení nebo investici do pronájmu.',
         isPublished: true,
         publishedAt: new Date(),
-        authorId: '', // Will be set below
+        authorId: adminUser.id,
       },
       {
         title: 'Historický dům v Benátkách',
@@ -130,7 +185,7 @@ async function main() {
         metaDescription: 'Autentický benátský dům s původními freskami. Unikátní investice do historické nemovitosti.',
         isPublished: true,
         publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
-        authorId: '',
+        authorId: adminUser.id,
       },
       {
         title: 'Farmhouse s olivovým hájem na Sicílii',
@@ -154,7 +209,7 @@ async function main() {
         metaDescription: 'Renovovaný farmhouse na Sicílii s olivovým hájem a výhledem na Etnu.',
         isPublished: true,
         publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
-        authorId: '',
+        authorId: adminUser.id,
       },
       {
         title: 'Luxusní pentouse v Miláně',
@@ -177,7 +232,7 @@ async function main() {
         metaDescription: 'Exkluzivní pentouse s panoramatickým výhledem na Milán. Luxusní bydlení v srdci města.',
         isPublished: true,
         publishedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
-        authorId: '',
+        authorId: adminUser.id,
       },
       {
         title: 'Apartmán u moře v Cinque Terre',
@@ -200,7 +255,7 @@ async function main() {
         metaDescription: 'Útulný apartmán s výhledem na moře v Cinque Terre.',
         isPublished: false,
         publishedAt: null,
-        authorId: '',
+        authorId: adminUser.id,
       },
       {
         title: 'Castello v Umbrii',
@@ -224,7 +279,7 @@ async function main() {
         metaDescription: 'Autentický středověký hrad s vinicí a olivovým hájem v srdci Umbrie.',
         isPublished: true,
         publishedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // 2 weeks ago
-        authorId: '',
+        authorId: adminUser.id,
       },
       {
         title: 'Moderna vila u jezera Como',
@@ -248,19 +303,13 @@ async function main() {
         metaDescription: 'Architektonicky výjimečná vila s přímým přístupem k jezeru Como.',
         isPublished: true,
         publishedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // 1 month ago
-        authorId: '',
+        authorId: adminUser.id,
       }
     ];
 
-    // Get admin user ID for properties
-    const adminUser = await prisma.user.findUnique({
-      where: { email: adminEmail },
-    });
-
-    if (adminUser) {
-      for (const propertyData of sampleProperties) {
-        propertyData.authorId = adminUser.id;
-        
+    let propertiesCreated = 0;
+    for (const propertyData of sampleProperties) {
+      try {
         const existingProperty = await prisma.property.findUnique({
           where: { slug: propertyData.slug },
         });
@@ -270,11 +319,17 @@ async function main() {
             data: propertyData,
           });
           console.log(`✅ Sample property created: ${propertyData.title}`);
+          propertiesCreated++;
+        } else {
+          console.log(`ℹ️  Property already exists: ${propertyData.title}`);
         }
+      } catch (error) {
+        console.error(`❌ Error creating property "${propertyData.title}":`, error);
       }
     }
 
     // Create sample blog posts
+    console.log('📝 Creating sample blog posts...');
     const sampleBlogPosts = [
       {
         title: 'Průvodce nákupem nemovitosti v Italii',
@@ -301,7 +356,7 @@ async function main() {
         metaDescription: 'Kompletní průvodce nákupem nemovitosti v Italii. Právní náležitosti, daně a praktické rady.',
         isPublished: true,
         publishedAt: new Date(),
-        authorId: '', // Will be set below
+        authorId: adminUser.id,
       },
       {
         title: 'Toskánsko: Srdce italské kultury',
@@ -325,7 +380,7 @@ async function main() {
         metaDescription: 'Objevte krásy Toskánska a jeho bohatou kulturu. Průvodce regionem plným historie a tradice.',
         isPublished: true,
         publishedAt: new Date(),
-        authorId: '', // Will be set below
+        authorId: adminUser.id,
       },
       {
         title: 'Top 10 italských měst pro investice do nemovitostí',
@@ -349,7 +404,7 @@ async function main() {
         metaDescription: 'Nejlepší italská města pro investice do nemovitostí v roce 2024. Analýza a doporučení.',
         isPublished: true,
         publishedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-        authorId: '',
+        authorId: adminUser.id,
       },
       {
         title: 'Italská gastronomie: Cesta regionálními specialitami',
@@ -373,7 +428,7 @@ async function main() {
         metaDescription: 'Průvodce italskou gastronomií po regionech. Objevte autentické chutě Itálie.',
         isPublished: true,
         publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000), // 5 days ago
-        authorId: '',
+        authorId: adminUser.id,
       },
       {
         title: 'Benátky: Život ve městě na vodě',
@@ -394,7 +449,7 @@ async function main() {
         metaDescription: 'Jak se žije v Benátkách? Praktické informace o životě ve městě na vodě.',
         isPublished: false, // Draft
         publishedAt: null,
-        authorId: '',
+        authorId: adminUser.id,
       },
       {
         title: 'Renovace italských nemovitostí: Co vás čeká',
@@ -415,7 +470,7 @@ async function main() {
         metaDescription: 'Praktický průvodce renovací italských nemovitostí. Povolení, náklady a tipy.',
         isPublished: true,
         publishedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000), // 10 days ago
-        authorId: '',
+        authorId: adminUser.id,
       },
       {
         title: 'Nejkrásnější italská jezera a jejich nemovitosti',
@@ -436,7 +491,7 @@ async function main() {
         metaDescription: 'Průvodce nemovitostmi u italských jezer Como, Garda a Maggiore.',
         isPublished: true,
         publishedAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000), // 20 days ago
-        authorId: '',
+        authorId: adminUser.id,
       },
       {
         title: 'Daňové výhody při koupi nemovitosti v Itálii',
@@ -454,14 +509,13 @@ async function main() {
         metaDescription: 'Aktuální přehled daňových výhod a úlev pro kupce italských nemovitostí.',
         isPublished: false, // Draft
         publishedAt: null,
-        authorId: '',
+        authorId: adminUser.id,
       }
     ];
 
-    if (adminUser) {
-      for (const postData of sampleBlogPosts) {
-        postData.authorId = adminUser.id;
-        
+    let blogPostsCreated = 0;
+    for (const postData of sampleBlogPosts) {
+      try {
         const existingPost = await prisma.blogPost.findUnique({
           where: { slug: postData.slug },
         });
@@ -471,11 +525,17 @@ async function main() {
             data: postData,
           });
           console.log(`✅ Sample blog post created: ${postData.title}`);
+          blogPostsCreated++;
+        } else {
+          console.log(`ℹ️  Blog post already exists: ${postData.title}`);
         }
+      } catch (error) {
+        console.error(`❌ Error creating blog post "${postData.title}":`, error);
       }
     }
 
     // Create sample inquiries
+    console.log('📧 Creating sample inquiries...');
     const sampleInquiries = [
       {
         name: 'Jan Novák',
@@ -549,15 +609,21 @@ async function main() {
       }
     ];
 
-    // Create sample inquiries
+    let inquiriesCreated = 0;
     for (const inquiryData of sampleInquiries) {
-      await prisma.inquiry.create({
-        data: inquiryData,
-      });
+      try {
+        await prisma.inquiry.create({
+          data: inquiryData,
+        });
+        inquiriesCreated++;
+      } catch (error) {
+        console.error(`❌ Error creating inquiry for ${inquiryData.name}:`, error);
+      }
     }
-    console.log('✅ Sample inquiries created');
+    console.log(`✅ ${inquiriesCreated} sample inquiries created`);
 
     // Create sample newsletter subscribers
+    console.log('📬 Creating sample newsletter subscribers...');
     const sampleSubscribers = [
       {
         email: 'pavel.novak@email.cz',
@@ -582,36 +648,74 @@ async function main() {
       }
     ];
 
+    let subscribersCreated = 0;
     for (const subscriberData of sampleSubscribers) {
-      await prisma.newsletterSubscriber.upsert({
-        where: { email: subscriberData.email },
-        update: subscriberData,
-        create: subscriberData,
-      });
+      try {
+        await prisma.newsletterSubscriber.upsert({
+          where: { email: subscriberData.email },
+          update: subscriberData,
+          create: subscriberData,
+        });
+        subscribersCreated++;
+      } catch (error) {
+        console.error(`❌ Error creating subscriber ${subscriberData.email}:`, error);
+      }
     }
-    console.log('✅ Sample newsletter subscribers created');
+    console.log(`✅ ${subscribersCreated} sample newsletter subscribers created`);
 
-    console.log('🎉 Database seed completed successfully!');
+    console.log('\n🎉 Database seed completed successfully!');
     console.log('\n📋 Summary:');
-    console.log(`   Admin Email: ${adminEmail}`);
-    console.log(`   Admin Password: ${adminPassword}`);
-    console.log('   8 sample properties created (mix of available, sold, draft, rented)');
-    console.log('   8 sample blog posts created (mix of published and draft)');
-    console.log('   7 sample inquiries created');
-    console.log('   3 sample newsletter subscribers created');
-    console.log('   Default settings configured');
+    console.log(`   ✅ Admin Email: ${adminEmail}`);
+    console.log(`   ✅ Admin Password: ${adminPassword}`);
+    console.log(`   ✅ ${propertiesCreated} sample properties created`);
+    console.log(`   ✅ ${blogPostsCreated} sample blog posts created`);
+    console.log(`   ✅ ${inquiriesCreated} sample inquiries created`);
+    console.log(`   ✅ ${subscribersCreated} sample newsletter subscribers created`);
+    console.log('   ✅ Default settings configured');
+    console.log('\n💡 Next steps:');
+    console.log('   1. Run "npm run db:studio" to view your data in Prisma Studio');
+    console.log('   2. Start your backend server with "npm run dev"');
+    console.log('   3. Test admin login in your application');
 
   } catch (error) {
-    console.error('❌ Error during database seed:', error);
+    console.error('\n❌ Error during database seed:');
+    console.error('Error details:', error);
+    
+    // Type guard for Prisma errors
+    const isErrorWithCode = (err: unknown): err is { code: string } => {
+      return typeof err === 'object' && err !== null && 'code' in err;
+    };
+    
+    if (isErrorWithCode(error)) {
+      if (error.code === 'P2002') {
+        console.error('\n💡 This appears to be a unique constraint violation.');
+        console.error('The database might already contain some of this data.');
+      } else if (error.code === 'P2025') {
+        console.error('\n💡 This appears to be a record not found error.');
+        console.error('Make sure your database schema is up to date.');
+      } else if (error.code?.startsWith('P')) {
+        console.error('\n💡 This is a Prisma-specific error. Check your schema and data.');
+      }
+    } else {
+      console.error('\n💡 This might be a database connection or configuration issue.');
+    }
+    
+    console.error('\nTroubleshooting:');
+    console.error('1. Verify DATABASE_URL is correctly set');
+    console.error('2. Check if database is accessible');
+    console.error('3. Run "npx prisma db push" to sync schema');
+    console.error('4. Run "npx prisma generate" to update client');
+    
     throw error;
   }
 }
 
 main()
   .catch((e) => {
-    console.error(e);
+    console.error('\n💥 Fatal error:', e);
     process.exit(1);
   })
   .finally(async () => {
+    console.log('\n🔌 Disconnecting from database...');
     await prisma.$disconnect();
   }); 

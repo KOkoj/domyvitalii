@@ -12,12 +12,15 @@ import {
   UserIcon
 } from '@heroicons/react/24/outline';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
-import { useBlogPosts } from '../hooks/useApi';
+import { ConfirmDialog } from '../components/ui/ConfirmDialog';
+import { useBlogPosts, useDeleteBlogPost } from '../hooks/useApi';
 import type { BlogPost } from '../types';
 
 const BlogPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [postToDelete, setPostToDelete] = useState<BlogPost | null>(null);
 
   // Use the React Query hook instead of manual API calls
   const { data: blogData, isLoading: loading, error: queryError } = useBlogPosts({
@@ -26,6 +29,26 @@ const BlogPage: React.FC = () => {
     search: searchTerm || undefined,
     status: statusFilter === 'all' ? undefined : statusFilter
   });
+
+  const deleteBlogPost = useDeleteBlogPost();
+
+  const handleDeleteClick = (post: BlogPost) => {
+    setPostToDelete(post);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!postToDelete) return;
+    
+    try {
+      await deleteBlogPost.mutateAsync(postToDelete.id);
+    } catch (error) {
+      // Error is already handled by the mutation hook
+    } finally {
+      setPostToDelete(null);
+      setDeleteDialogOpen(false);
+    }
+  };
 
   const posts = blogData?.data || [];
   const error = queryError ? 'Nepodařilo se načíst články' : null;
@@ -354,14 +377,10 @@ const BlogPage: React.FC = () => {
                             <PencilIcon className="h-4 w-4" />
                           </Link>
                           <button 
-                            onClick={() => {
-                              if (window.confirm('Opravdu chcete smazat tento článek?')) {
-                                // TODO: Implement delete functionality
-                                console.log('Delete blog post:', post.id);
-                              }
-                            }}
+                            onClick={() => handleDeleteClick(post)}
                             className="text-red-600 hover:text-red-900 p-1"
                             title="Smazat článek"
+                            disabled={deleteBlogPost.isPending}
                           >
                             <TrashIcon className="h-4 w-4" />
                           </button>
@@ -375,6 +394,18 @@ const BlogPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Confirmation Dialog */}
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Smazat článek"
+        description={`Opravdu chcete smazat článek "${postToDelete?.title}"? Tato akce je nevratná.`}
+        confirmText="Smazat"
+        cancelText="Zrušit"
+        variant="destructive"
+        onConfirm={handleDeleteConfirm}
+      />
     </div>
   );
 };

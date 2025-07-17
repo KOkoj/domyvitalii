@@ -22,6 +22,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import ProductionTestingWidget from './ProductionTestingWidget'
 import type { NavItem } from '@/types'
 
 // Navigation items
@@ -485,6 +486,9 @@ export default function Layout() {
           </div>
         </main>
       </div>
+
+      {/* Production Testing Widget */}
+      <ProductionTestingWidget />
     </div>
   )
 } 

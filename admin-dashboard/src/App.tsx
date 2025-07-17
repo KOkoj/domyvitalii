@@ -5,8 +5,11 @@ import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import PropertiesPage from './pages/PropertiesPage'
 import PropertyFormPage from './pages/PropertyFormPage'
+import PropertyDetailPage from './pages/PropertyDetailPage'
+import PropertyBulkPage from './pages/PropertyBulkPage'
 import BlogPage from './pages/BlogPage'
 import BlogFormPage from './pages/BlogFormPage'
+import BlogDetailPage from './pages/BlogDetailPage'
 import InquiriesPage from './pages/InquiriesPage'
 import InquiryDetailPage from './pages/InquiryDetailPage'
 import UsersPage from './pages/UsersPage'
@@ -73,11 +76,14 @@ function AppContent() {
         {/* Properties */}
         <Route path="properties" element={<PropertiesPage />} />
         <Route path="properties/new" element={<PropertyFormPage />} />
+        <Route path="properties/bulk" element={<PropertyBulkPage />} />
+        <Route path="properties/:id" element={<PropertyDetailPage />} />
         <Route path="properties/:id/edit" element={<PropertyFormPage />} />
         
         {/* Blog */}
         <Route path="blog" element={<BlogPage />} />
         <Route path="blog/new" element={<BlogFormPage />} />
+        <Route path="blog/:id" element={<BlogDetailPage />} />
         <Route path="blog/:id/edit" element={<BlogFormPage />} />
         
         {/* Inquiries */}

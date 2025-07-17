@@ -47,56 +47,35 @@ export function useDashboardStats() {
   return useQuery({
     queryKey: queryKeys.dashboardStats,
     queryFn: async (): Promise<DashboardStats> => {
-      try {
-        const response = await api.get<ApiResponse<any>>('/dashboard/stats')
-        const backendData = response.data.data
-        
-        // Transform backend data structure to match frontend DashboardStats type
-        const transformedData: DashboardStats = {
-          inquiries: {
-            today: backendData.stats?.inquiries?.new || 0,
-            lastWeek: backendData.stats?.inquiries?.total || 0,
-            trend: Math.floor(Math.random() * 20) - 10, // Mock trend data
-          },
-          properties: {
-            active: backendData.stats?.properties?.published || 0,
-            trend: Math.floor(Math.random() * 15) - 5, // Mock trend data
-          },
-          blogPosts: {
-            draft: backendData.stats?.blogPosts?.draft || 0,
-            trend: Math.floor(Math.random() * 10) - 5, // Mock trend data
-          },
-          pageViews: {
-            thisWeek: Math.floor(Math.random() * 1000) + 500, // Mock pageViews data
-            trend: Math.floor(Math.random() * 25) - 10, // Mock trend data
-          }
-        }
-        
-        return transformedData
-      } catch (error) {
-        // Return mock data if API fails
-        return {
-          inquiries: {
-            today: 5,
-            lastWeek: 23,
-            trend: 12,
-          },
-          properties: {
-            active: 15,
-            trend: 8,
-          },
-          blogPosts: {
-            draft: 3,
-            trend: -2,
-          },
-          pageViews: {
-            thisWeek: 1247,
-            trend: 15,
-          }
+      const response = await api.get<ApiResponse<any>>('/dashboard/stats')
+      const backendData = response.data.data
+      
+      // Transform backend data structure to match frontend DashboardStats type
+      const transformedData: DashboardStats = {
+        inquiries: {
+          today: backendData.stats?.inquiries?.new || 0,
+          lastWeek: backendData.stats?.inquiries?.total || 0,
+          trend: backendData.stats?.inquiries?.trend || 0,
+        },
+        properties: {
+          active: backendData.stats?.properties?.published || 0,
+          trend: backendData.stats?.properties?.trend || 0,
+        },
+        blogPosts: {
+          draft: backendData.stats?.blogPosts?.draft || 0,
+          trend: backendData.stats?.blogPosts?.trend || 0,
+        },
+        pageViews: {
+          thisWeek: backendData.stats?.pageViews?.thisWeek || 0,
+          trend: backendData.stats?.pageViews?.trend || 0,
         }
       }
+      
+      return transformedData
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   })
 }
 
@@ -104,88 +83,65 @@ export function useRecentActivity(limit = 10) {
   return useQuery({
     queryKey: [...queryKeys.recentActivity, limit],
     queryFn: async (): Promise<ActivityItem[]> => {
-      try {
-        const response = await api.get<ApiResponse<any>>('/dashboard/stats')
-        const backendData = response.data.data
-        
-        // Transform recent data to ActivityItem format
-        const activities: ActivityItem[] = []
-        
-        // Add recent properties
-        if (backendData.recent?.properties) {
-          backendData.recent.properties.forEach((prop: any) => {
-            activities.push({
-              id: `prop-${prop.id}`,
-              type: 'PROPERTY_CREATED',
-              title: `Nová nemovitost: ${prop.title}`,
-              description: `Vytvořeno uživatelem ${prop.author?.name}`,
-              userId: 'user-1',
-              user: { name: prop.author?.name || 'Systém', avatar: undefined },
-              createdAt: prop.createdAt,
-            })
+      const response = await api.get<ApiResponse<any>>('/dashboard/stats')
+      const backendData = response.data.data
+      
+      // Transform recent data to ActivityItem format
+      const activities: ActivityItem[] = []
+      
+      // Add recent properties
+      if (backendData.recent?.properties) {
+        backendData.recent.properties.forEach((prop: any) => {
+          activities.push({
+            id: `prop-${prop.id}`,
+            type: 'PROPERTY_CREATED',
+            title: `Nová nemovitost: ${prop.title}`,
+            description: `Vytvořeno uživatelem ${prop.author?.name}`,
+            userId: 'user-1',
+            user: { name: prop.author?.name || 'Systém', avatar: undefined },
+            createdAt: prop.createdAt,
           })
-        }
-        
-        // Add recent blog posts
-        if (backendData.recent?.blogPosts) {
-          backendData.recent.blogPosts.forEach((post: any) => {
-            activities.push({
-              id: `blog-${post.id}`,
-              type: 'BLOG_PUBLISHED',
-              title: `Nový článek: ${post.title}`,
-              description: `Publikováno uživatelem ${post.author?.name}`,
-              userId: 'user-1',
-              user: { name: post.author?.name || 'Systém', avatar: undefined },
-              createdAt: post.createdAt,
-            })
+        })
+      }
+      
+      // Add recent blog posts
+      if (backendData.recent?.blogPosts) {
+        backendData.recent.blogPosts.forEach((post: any) => {
+          activities.push({
+            id: `blog-${post.id}`,
+            type: 'BLOG_PUBLISHED',
+            title: `Nový článek: ${post.title}`,
+            description: `Publikováno uživatelem ${post.author?.name}`,
+            userId: 'user-1',
+            user: { name: post.author?.name || 'Systém', avatar: undefined },
+            createdAt: post.createdAt,
           })
-        }
-        
-        // Add recent inquiries
-        if (backendData.recent?.inquiries) {
-          backendData.recent.inquiries.forEach((inquiry: any) => {
-            activities.push({
-              id: `inquiry-${inquiry.id}`,
-              type: 'INQUIRY_RECEIVED',
-              title: `Nová poptávka od ${inquiry.name}`,
-              description: `Email: ${inquiry.email}`,
-              userId: 'user-1',
-              user: { name: 'Systém', avatar: undefined },
-              createdAt: inquiry.createdAt,
-            })
-          })
-        }
-        
-        // Sort by date and limit
-        return activities
-          .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-          .slice(0, limit)
-          
-      } catch (error) {
-        // Return mock data if API fails
-        return [
-          {
-            id: '1',
+        })
+      }
+      
+      // Add recent inquiries
+      if (backendData.recent?.inquiries) {
+        backendData.recent.inquiries.forEach((inquiry: any) => {
+          activities.push({
+            id: `inquiry-${inquiry.id}`,
             type: 'INQUIRY_RECEIVED',
-            title: 'Nová poptávka od Jan Novák',
-            description: 'Zájem o vilu v Toskánsku',
+            title: `Nová poptávka od ${inquiry.name}`,
+            description: `Email: ${inquiry.email}`,
             userId: 'user-1',
             user: { name: 'Systém', avatar: undefined },
-            createdAt: new Date().toISOString(),
-          },
-          {
-            id: '2',
-            type: 'PROPERTY_CREATED',
-            title: 'Nová nemovitost přidána',
-            description: 'Vila s bazénem v Chianti',
-            userId: 'user-1',
-            user: { name: 'Admin', avatar: undefined },
-            createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-          },
-        ]
+            createdAt: inquiry.createdAt,
+          })
+        })
       }
+      
+      // Sort by date and limit
+      return activities
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, limit)
     },
     staleTime: 2 * 60 * 1000, // 2 minutes
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   })
 }
 
@@ -200,82 +156,21 @@ export function useProperties(params?: {
   return useQuery({
     queryKey: [...queryKeys.properties, params],
     queryFn: async (): Promise<PaginatedResponse<Property>> => {
-      try {
-        const searchParams = new URLSearchParams()
-        if (params?.page) searchParams.append('page', params.page.toString())
-        if (params?.limit) searchParams.append('limit', params.limit.toString())
-        if (params?.search) searchParams.append('search', params.search)
-        if (params?.status) searchParams.append('status', params.status)
-        if (params?.type) searchParams.append('type', params.type)
-        
-        const response = await api.get<ApiResponse<PaginatedResponse<Property>>>(
-          `/properties?${searchParams.toString()}`
-        )
-        return response.data.data
-      } catch (error) {
-        console.error('Properties API error:', error)
-        // Return mock data if API fails
-        return {
-          data: [
-            {
-              id: '1',
-              title: 'Luxusní vila v Toskánsku',
-              slug: 'luxusni-vila-v-toskansku',
-              description: 'Krásná vila s výhledem na vinice v srdci Toskánska.',
-              price: 850000,
-              currency: 'EUR',
-              type: 'VILLA',
-              status: 'AVAILABLE',
-              bedrooms: 4,
-              bathrooms: 3,
-              area: 280.5,
-              yearBuilt: 1890,
-              address: 'Via del Chianti 123',
-              city: 'Greve in Chianti',
-              region: 'Toskánsko',
-              country: 'Italy',
-              isPublished: true,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-              images: [],
-              author: { id: '1', name: 'Admin', role: 'ADMIN', email: 'admin@domyvitalii.cz', isActive: true, createdAt: '', updatedAt: '' },
-              authorId: '1',
-            } as Property,
-            {
-              id: '2',
-              title: 'Moderní apartmán v Římě',
-              slug: 'moderni-apartman-v-rime',
-              description: 'Stylový apartmán v centru Říma, blízko Kolosea.',
-              price: 450000,
-              currency: 'EUR',
-              type: 'APARTMENT',
-              status: 'AVAILABLE',
-              bedrooms: 2,
-              bathrooms: 2,
-              area: 95,
-              yearBuilt: 2020,
-              address: 'Via dei Fori Imperiali 45',
-              city: 'Roma',
-              region: 'Lazio',
-              country: 'Italy',
-              isPublished: true,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-              images: [],
-              author: { id: '1', name: 'Admin', role: 'ADMIN', email: 'admin@domyvitalii.cz', isActive: true, createdAt: '', updatedAt: '' },
-              authorId: '1',
-            } as Property,
-          ],
-          pagination: {
-            page: 1,
-            limit: 10,
-            total: 2,
-            totalPages: 1,
-          },
-        }
-      }
+      const searchParams = new URLSearchParams()
+      if (params?.page) searchParams.append('page', params.page.toString())
+      if (params?.limit) searchParams.append('limit', params.limit.toString())
+      if (params?.search) searchParams.append('search', params.search)
+      if (params?.status) searchParams.append('status', params.status)
+      if (params?.type) searchParams.append('type', params.type)
+      
+      const response = await api.get<ApiResponse<PaginatedResponse<Property>>>(
+        `/properties?${searchParams.toString()}`
+      )
+      return response.data.data
     },
     staleTime: 5 * 60 * 1000,
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   })
 }
 
@@ -287,6 +182,8 @@ export function useProperty(id: string) {
       return response.data.data
     },
     enabled: !!id,
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   })
 }
 
@@ -356,50 +253,20 @@ export function useBlogPosts(params?: {
   return useQuery({
     queryKey: [...queryKeys.blogPosts, params],
     queryFn: async (): Promise<PaginatedResponse<BlogPost>> => {
-      try {
-        const searchParams = new URLSearchParams()
-        if (params?.page) searchParams.append('page', params.page.toString())
-        if (params?.limit) searchParams.append('limit', params.limit.toString())
-        if (params?.search) searchParams.append('search', params.search)
-        if (params?.status) searchParams.append('status', params.status)
-        
-        const response = await api.get<ApiResponse<PaginatedResponse<BlogPost>>>(
-          `/blog?${searchParams.toString()}`
-        )
-        return response.data.data
-      } catch (error) {
-        console.error('Blog API error:', error)
-        // Return mock data if API fails
-        return {
-          data: [
-            {
-              id: '1',
-              title: 'Průvodce nákupem nemovitosti v Italii',
-              slug: 'pruvodce-nakupem-nemovitosti-v-italii',
-              excerpt: 'Vše, co potřebujete vědět o koupi nemovitosti v Italii.',
-              content: 'Komplexní průvodce...',
-              family: 'PROPERTY',
-              topic: 'Právo',
-              tags: ['nákup', 'právní náležitosti'],
-              readTime: 8,
-              views: 150,
-              isPublished: true,
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-              author: { id: '1', name: 'Admin', role: 'ADMIN', email: 'admin@domyvitalii.cz', isActive: true, createdAt: '', updatedAt: '' },
-              authorId: '1',
-            } as BlogPost,
-          ],
-          pagination: {
-            page: 1,
-            limit: 10,
-            total: 1,
-            totalPages: 1,
-          },
-        }
-      }
+      const searchParams = new URLSearchParams()
+      if (params?.page) searchParams.append('page', params.page.toString())
+      if (params?.limit) searchParams.append('limit', params.limit.toString())
+      if (params?.search) searchParams.append('search', params.search)
+      if (params?.status) searchParams.append('status', params.status)
+      
+      const response = await api.get<ApiResponse<PaginatedResponse<BlogPost>>>(
+        `/blog?${searchParams.toString()}`
+      )
+      return response.data.data
     },
     staleTime: 5 * 60 * 1000,
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   })
 }
 
@@ -411,6 +278,8 @@ export function useBlogPost(id: string) {
       return response.data.data
     },
     enabled: !!id,
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   })
 }
 
@@ -480,44 +349,20 @@ export function useInquiries(params?: {
   return useQuery({
     queryKey: [...queryKeys.inquiries, params],
     queryFn: async (): Promise<PaginatedResponse<Inquiry>> => {
-      try {
-        const searchParams = new URLSearchParams()
-        if (params?.page) searchParams.append('page', params.page.toString())
-        if (params?.limit) searchParams.append('limit', params.limit.toString())
-        if (params?.search) searchParams.append('search', params.search)
-        if (params?.status) searchParams.append('status', params.status)
-        
-        const response = await api.get<ApiResponse<PaginatedResponse<Inquiry>>>(
-          `/inquiries?${searchParams.toString()}`
-        )
-        return response.data.data
-      } catch (error) {
-        console.error('Inquiries API error:', error)
-        // Return mock data if API fails
-        return {
-          data: [
-            {
-              id: '1',
-              name: 'Jan Novák',
-              email: 'jan.novak@email.cz',
-              phone: '+420 606 123 456',
-              message: 'Zajímá mě vila v Toskánsku.',
-              type: 'PROPERTY',
-              status: 'NEW',
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-            } as Inquiry,
-          ],
-          pagination: {
-            page: 1,
-            limit: 10,
-            total: 1,
-            totalPages: 1,
-          },
-        }
-      }
+      const searchParams = new URLSearchParams()
+      if (params?.page) searchParams.append('page', params.page.toString())
+      if (params?.limit) searchParams.append('limit', params.limit.toString())
+      if (params?.search) searchParams.append('search', params.search)
+      if (params?.status) searchParams.append('status', params.status)
+      
+      const response = await api.get<ApiResponse<PaginatedResponse<Inquiry>>>(
+        `/inquiries?${searchParams.toString()}`
+      )
+      return response.data.data
     },
     staleTime: 2 * 60 * 1000,
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   })
 }
 
@@ -529,6 +374,8 @@ export function useInquiry(id: string) {
       return response.data.data
     },
     enabled: !!id,
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   })
 }
 
@@ -573,6 +420,8 @@ export function useUsers(params?: {
       return response.data.data
     },
     staleTime: 5 * 60 * 1000,
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   })
 }
 
@@ -584,6 +433,8 @@ export function useUser(id: string) {
       return response.data.data
     },
     enabled: !!id,
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   })
 }
 
@@ -633,6 +484,8 @@ export function useSettings() {
       return response.data.data
     },
     staleTime: 10 * 60 * 1000, // 10 minutes
+    retry: 3,
+    retryDelay: attemptIndex => Math.min(1000 * 2 ** attemptIndex, 30000),
   })
 }
 
