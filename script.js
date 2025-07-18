@@ -681,7 +681,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Auto-detect environment based on hostname
         ADMIN_DASHBOARD_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
             ? 'http://localhost:5173' // Local development
-            : 'https://your-admin-dashboard.netlify.app', // Production - REPLACE WITH YOUR NETLIFY URL
+            : 'https://graceful-nougat-03f162-admin.netlify.app', // Production - Admin Dashboard URL
     };
 
     // Login button interaction
