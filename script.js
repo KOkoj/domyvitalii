@@ -302,20 +302,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         function determineFormPageUrl(interest) {
-            // Based on the admin dashboard structure you have
-            const baseUrl = './admin-dashboard/index.html';
+            // Use environment-aware admin dashboard URL
+            const baseUrl = CONFIG.ADMIN_DASHBOARD_URL;
             
             switch(interest) {
                 case 'buying':
-                    return `${baseUrl}#/inquiries/new?type=buying`;
+                    return `${baseUrl}/inquiries/new?type=buying`;
                 case 'selling':
-                    return `${baseUrl}#/properties/new`;
+                    return `${baseUrl}/properties/new`;
                 case 'consulting':
-                    return `${baseUrl}#/inquiries/new?type=consulting`;
+                    return `${baseUrl}/inquiries/new?type=consulting`;
                 case 'investment':
-                    return `${baseUrl}#/inquiries/new?type=investment`;
+                    return `${baseUrl}/inquiries/new?type=investment`;
                 default:
-                    return `${baseUrl}#/inquiries/new`;
+                    return `${baseUrl}/inquiries/new`;
             }
         }
     }
@@ -676,12 +676,37 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    // Environment-aware configuration
+    const CONFIG = {
+        // Auto-detect environment based on hostname
+        ADMIN_DASHBOARD_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:5173' // Local development
+            : 'https://your-admin-dashboard.netlify.app', // Production - REPLACE WITH YOUR NETLIFY URL
+    };
+
     // Login button interaction
     const loginBtn = document.querySelector('.login-btn');
     
     if (loginBtn) {
         loginBtn.addEventListener('click', function() {
             showNotification('Přesměrování na přihlašovací stránku...', 'info');
+            // Navigate to admin dashboard login
+            setTimeout(() => {
+                window.location.href = `${CONFIG.ADMIN_DASHBOARD_URL}/login`;
+            }, 1000);
+        });
+    }
+
+    // Mobile login button
+    const mobileLoginBtn = document.querySelector('.mobile-login-btn');
+    
+    if (mobileLoginBtn) {
+        mobileLoginBtn.addEventListener('click', function() {
+            showNotification('Přesměrování na přihlašovací stránku...', 'info');
+            // Navigate to admin dashboard login
+            setTimeout(() => {
+                window.location.href = `${CONFIG.ADMIN_DASHBOARD_URL}/login`;
+            }, 1000);
         });
     }
     
@@ -692,6 +717,10 @@ document.addEventListener('DOMContentLoaded', function() {
         registerLink.addEventListener('click', function(e) {
             e.preventDefault();
             showNotification('Přesměrování na registrační stránku...', 'info');
+            // For now, also redirect to admin dashboard (you can create a separate register page later)
+            setTimeout(() => {
+                window.location.href = `${CONFIG.ADMIN_DASHBOARD_URL}/login`;
+            }, 1000);
         });
     }
     

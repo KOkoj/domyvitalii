@@ -12,20 +12,6 @@
   from = "/*"
   to = "/index.html"
   status = 200
-  conditions = {Role = ["admin"]}
-
-# Handle admin dashboard routes
-[[redirects]]
-  from = "/admin/*"
-  to = "/index.html"
-  status = 200
-
-# API routes - redirect to Railway backend (optional fallback)
-# [[redirects]]
-#   from = "/api/*"
-#   to = "https://your-railway-backend.up.railway.app/api/:splat"
-#   status = 200
-#   force = true
 
 # Security headers
 [[headers]]
