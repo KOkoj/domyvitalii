@@ -24,20 +24,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Security middleware
-// app.use(helmet({
-//   crossOriginResourcePolicy: { policy: "cross-origin" },
-//   contentSecurityPolicy: {
-//     directives: {
-//       defaultSrc: ["'self'"],
-//       styleSrc: ["'self'", "'unsafe-inline'"],
-//       scriptSrc: ["'self'"],
-//       imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
-//     },
-//   },
-// }));
-
-// CORS configuration
+// 🚨 CORS CONFIGURATION - MUST BE FIRST!
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
   'http://localhost:3000',
   'http://localhost:5173', 
@@ -50,16 +37,28 @@ app.use(cors({
   origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// Handle preflight requests explicitly
 app.options('*', cors({
   origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+// Security middleware
+// app.use(helmet({
+//   crossOriginResourcePolicy: { policy: "cross-origin" },
+//   contentSecurityPolicy: {
+//     directives: {
+//       defaultSrc: ["'self'"],
+//       styleSrc: ["'self'", "'unsafe-inline'"],
+//       scriptSrc: ["'self'"],
+//       imgSrc: ["'self'", "data:", "https://res.cloudinary.com"],
+//     },
+//   },
+// }));
 
 // Rate limiting
 const limiter = rateLimit({
