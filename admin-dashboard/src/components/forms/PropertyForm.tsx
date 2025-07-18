@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FormWizard, WizardStep, useWizard } from '@/components/ui/FormWizard'
+import { FormWizard, WizardStep } from '@/components/ui/FormWizard'
 import { Input } from '@/components/ui/Input'
 import { Select, SelectOption } from '@/components/ui/Select'
 import { FileUploader, FileItem } from '@/components/ui/FileUploader'
-import { Button } from '@/components/ui/Button'
+// import { Button } from '@/components/ui/Button'
 import { useCreateProperty, useUpdateProperty, useProperty } from '@/hooks/useApi'
 import {
   propertySchema,
-  propertyBasicInfoSchema,
-  propertyDetailsSchema,
-  propertyMediaSchema,
-  propertySeoSchema,
+  // propertyBasicInfoSchema,
+  // propertyDetailsSchema,
+  // propertyMediaSchema,
+  // propertySeoSchema,
   PropertyFormData,
-  PropertyBasicInfo,
-  PropertyDetails,
-  PropertyMedia,
+  // PropertyBasicInfo,
+  // PropertyDetails,
+  // PropertyMedia,
   PropertySeo,
 } from '@/lib/validations'
 import type { Property } from '@/types'

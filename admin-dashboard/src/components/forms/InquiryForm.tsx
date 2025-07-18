@@ -6,7 +6,7 @@ import { Select, SelectOption } from '@/components/ui/Select'
 import { Button } from '@/components/ui/Button'
 import { useUpdateInquiry, useInquiry, useUsers, useProperties } from '@/hooks/useApi'
 import { inquirySchema, InquiryFormData } from '@/lib/validations'
-import type { Inquiry } from '@/types'
+// import type { Inquiry } from '@/types'
 import { cn } from '@/lib/utils'
 
 interface InquiryFormProps {
@@ -42,7 +42,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
     register,
     control,
     handleSubmit,
-    watch,
+    // watch,
     reset,
     formState: { errors },
   } = form
@@ -70,7 +70,12 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
 
     setIsSubmitting(true)
     try {
-      await updateInquiryMutation.mutateAsync({ id: inquiryId, data })
+      // Convert status to uppercase for API compatibility
+      const apiData = {
+        ...data,
+        status: data.status?.toUpperCase() as 'NEW' | 'IN_PROGRESS' | 'RESPONDED' | 'CLOSED'
+      }
+      await updateInquiryMutation.mutateAsync({ id: inquiryId, data: apiData })
       onSuccess?.()
     } catch (error) {
       console.error('Inquiry form submission error:', error)

@@ -3,11 +3,11 @@ import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Input } from '@/components/ui/Input'
 import { Select, SelectOption } from '@/components/ui/Select'
-import { FileUploader, FileItem } from '@/components/ui/FileUploader'
+import { FileUploader } from '@/components/ui/FileUploader'
 import { Button } from '@/components/ui/Button'
 import { useCreateBlogPost, useUpdateBlogPost, useBlogPost } from '@/hooks/useApi'
 import { blogPostSchema, BlogPostFormData } from '@/lib/validations'
-import type { BlogPost } from '@/types'
+// import type { BlogPost } from '@/types'
 import { cn } from '@/lib/utils'
 
 interface BlogFormProps {

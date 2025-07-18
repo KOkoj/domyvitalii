@@ -5,8 +5,8 @@ import {
   DocumentTextIcon, 
   PhotoIcon, 
   BoltIcon,
-  CommandLineIcon,
-  ClipboardDocumentListIcon
+  // CommandLineIcon,
+  // ClipboardDocumentListIcon
 } from '@heroicons/react/24/outline';
 
 const QuickActions: React.FC = () => {
