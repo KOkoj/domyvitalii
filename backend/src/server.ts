@@ -25,27 +25,29 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // 🚨 CORS CONFIGURATION - MUST BE FIRST!
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
+const allowedOrigins = [
   'http://localhost:3000',
-  'http://localhost:5173', 
+  'http://localhost:5173',
   'https://graceful-nougat-03f162.netlify.app',
-  'https://domyvitalii-admin.netlify.app'
+  'https://domyvitalii-admin.netlify.app',
 ];
-console.log('🚨 Using Allowed Origins:', allowedOrigins);
 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
 
-app.options('*', cors({
-  origin: allowedOrigins,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+
+  next();
+});
+
 
 // Security middleware
 // app.use(helmet({
