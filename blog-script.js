@@ -3,7 +3,7 @@ const API_CONFIG = {
     // Automatically detect if we're in development or production
     baseURL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
         ? 'http://localhost:3001/api'  // Local development
-        : 'https://your-railway-backend.up.railway.app/api', // Production - UPDATE THIS URL
+        : 'https://domyvitalii-production.up.railway.app/api', // Production
     
     // Fallback for debugging
     get apiUrl() {

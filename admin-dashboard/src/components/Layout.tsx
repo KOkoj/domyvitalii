@@ -23,6 +23,7 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import ProductionTestingWidget from './ProductionTestingWidget'
+import { ErrorBoundary } from './ErrorBoundary'
 import type { NavItem } from '@/types'
 
 // Navigation items
@@ -481,7 +482,9 @@ export default function Layout() {
         <main className="flex-1 overflow-y-auto">
           <div className="py-6">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <Outlet />
+              <ErrorBoundary>
+                <Outlet />
+              </ErrorBoundary>
             </div>
           </div>
         </main>

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { toast } from 'react-hot-toast'
+import toastService from './toast'
 
 // Create axios instance
 export const api = axios.create({
@@ -61,7 +61,7 @@ api.interceptors.response.use(
         
         // Only show error if we're not already on login page
         if (!window.location.pathname.includes('/login')) {
-          toast.error('Relace vypršela, přihlaste se znovu')
+          toastService.error('Relace vypršela, přihlaste se znovu')
           window.location.href = '/login'
         }
         
@@ -69,14 +69,8 @@ api.interceptors.response.use(
       }
     }
 
-    // Handle other errors
-    if (error.response?.status >= 500) {
-      toast.error('Chyba serveru, zkuste to později')
-    } else if (error.response?.status === 403) {
-      toast.error('Nemáte oprávnění k této akci')
-    } else if (error.response?.status === 404) {
-      toast.error('Požadovaný zdroj nebyl nalezen')
-    }
+    // Handle other errors with improved messaging
+    toastService.handleApiError(error)
 
     return Promise.reject(error)
   }

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { api } from '@/lib/api'
-import { toast } from 'react-hot-toast'
+import toastService from '@/lib/toast'
 
 interface User {
   id: string
@@ -70,11 +70,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Set user data
       setUser(userData)
       
-      toast.success(`Vítejte zpět, ${userData.name}!`)
+      toastService.success(`Vítejte zpět, ${userData.name}!`)
       
     } catch (error: any) {
       const message = error.response?.data?.message || 'Neplatné přihlašovací údaje'
-      toast.error(message)
+      toastService.handleApiError(error, 'Přihlášení se nezdařilo')
       throw new Error(message)
     } finally {
       setIsLoading(false)
@@ -88,7 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     delete api.defaults.headers.common['Authorization']
     setUser(null)
     
-    toast.success('Byli jste úspěšně odhlášeni')
+    toastService.success('Byli jste úspěšně odhlášeni')
   }
 
   const refreshUser = async () => {
