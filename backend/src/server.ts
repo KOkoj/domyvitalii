@@ -38,7 +38,12 @@ app.use(helmet({
 }));
 
 // CORS configuration
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:3000'];
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
+  'http://localhost:3000',
+  'http://localhost:5173', 
+  'https://graceful-nougat-03f162.netlify.app',
+  'https://domyvitalii-admin.netlify.app'
+];
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
