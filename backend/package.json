@@ -7,7 +7,7 @@
     "dev": "nodemon src/server.ts",
     "build": "tsc && prisma generate",
     "postbuild": "prisma db push --accept-data-loss && prisma generate",
-    "start": "npm run build && node dist/server.js",
+    "start": "tsc && node dist/server.js",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
