@@ -260,10 +260,7 @@ router.get(
     });
 
     // Get total views this week (mock calculation)
-    const totalViews = await prisma.property.aggregate({
-      _sum: {
-        id: true // This would be views field in real implementation
-      },
+    const totalViews = await prisma.property.count({
       where: {
         updatedAt: {
           gte: weekAgo
@@ -359,7 +356,7 @@ router.get(
 router.post(
   '/bulk/properties',
   authenticate,
-  authorize(['ADMIN', 'MANAGER']),
+  authorize('ADMIN'),
   asyncHandler(async (req: AuthenticatedRequest, res) => {
     const { propertyIds, action, newStatus } = req.body;
 
