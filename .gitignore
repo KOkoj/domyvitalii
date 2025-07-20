@@ -74,7 +74,7 @@ Thumbs.db
 # Railway
 .railway
 
-# Cloudinary keys (if any)
+# Cloudinary keys (if any yes)
 cloudinary.json
 
 # Swagger/OpenAPI
