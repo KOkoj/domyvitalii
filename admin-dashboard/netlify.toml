@@ -1,4 +1,4 @@
 [build]
   base = "admin-dashboard"
-  publish = "admin-dashboard/dist"
+  publish = "dist"
   command = "npm run build"
