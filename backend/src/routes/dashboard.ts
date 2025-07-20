@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Response, NextFunction } from 'express';
 import { PrismaClient } from '@prisma/client';
 import { AppError, asyncHandler } from '../middleware/errorHandler';
 import { authenticate, authorize, AuthenticatedRequest } from '../middleware/auth';
@@ -11,7 +11,7 @@ router.get(
   '/stats',
   authenticate,
   authorize('ADMIN', 'MANAGER'),
-  asyncHandler(async (req: AuthenticatedRequest, res, next) => {
+  asyncHandler(async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const [
         totalProperties,
@@ -121,7 +121,7 @@ router.get(
   '/analytics',
   authenticate,
   authorize('ADMIN', 'MANAGER'),
-  asyncHandler(async (req: AuthenticatedRequest, res, next) => {
+  asyncHandler(async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       // Get monthly data for the last 12 months
       const monthlyData = await prisma.$queryRaw`
