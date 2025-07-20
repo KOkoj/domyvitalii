@@ -35,42 +35,26 @@ const allowedOrigins = [
   'https://domyvitalii-admin.netlify.app',
 ];
 
-// Explicit OPTIONS preflight handling
-app.options('*', cors({ 
-  origin: allowedOrigins,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
-
-// Manual CORS headers (as backup)
+// Simple, direct CORS handling - exactly as ChatGPT suggested
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   console.log('🔍 CORS request from origin:', origin);
   console.log('📋 Allowed origins:', allowedOrigins);
   
-  if (origin && allowedOrigins.includes(origin)) {
+  if (allowedOrigins.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', 'true');
     console.log('✅ Origin allowed:', origin);
   }
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
 
   if (req.method === 'OPTIONS') {
     console.log('✅ Handling OPTIONS preflight request');
-    return res.sendStatus(200);
+    return res.sendStatus(200); // allows preflight to succeed
   }
   next();
 });
-
-// Main CORS middleware
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-}));
 
 
 // Security middleware
