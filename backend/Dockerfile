@@ -5,13 +5,13 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy package files first for better caching
-COPY package*.json ./
+COPY backend/package*.json ./
 
 # Install ALL dependencies (including devDependencies for building)
 RUN npm install
 
-# Copy all source code (including Prisma schema)
-COPY . .
+# Copy all backend source code (including Prisma schema)
+COPY backend/ .
 
 # Generate Prisma client
 RUN npx prisma generate
