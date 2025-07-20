@@ -35,26 +35,38 @@ const allowedOrigins = [
   'https://domyvitalii-admin.netlify.app',
 ];
 
+// Explicit OPTIONS preflight handling
+app.options('*', cors({ 
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
+// Manual CORS headers (as backup)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  console.log('🔍 CORS request from origin:', origin);
+  console.log('📋 Allowed origins:', allowedOrigins);
+  
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+    console.log('✅ Origin allowed:', origin);
+  }
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+  res.header('Access-Control-Allow-Credentials', 'true');
+
+  if (req.method === 'OPTIONS') {
+    console.log('✅ Handling OPTIONS preflight request');
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+// Main CORS middleware
 app.use(cors({
-  origin: function (origin, callback) {
-    // Add debug logging
-    console.log('🔍 CORS request from origin:', origin);
-    console.log('📋 Allowed origins:', allowedOrigins);
-    
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) {
-      console.log('✅ Allowing request with no origin');
-      return callback(null, true);
-    }
-    
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      console.log('✅ Origin allowed:', origin);
-      callback(null, true);
-    } else {
-      console.log('🚫 CORS blocked origin:', origin);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
