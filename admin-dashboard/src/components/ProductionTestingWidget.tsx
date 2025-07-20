@@ -43,7 +43,7 @@ const ProductionTestingWidget: React.FC = () => {
 
   // Detect current environment
   useEffect(() => {
-    const currentApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+    const currentApiUrl = import.meta.env.VITE_API_URL || 'https://domyvitalii-production.up.railway.app/api';
     const env = environments.find(e => e.apiUrl === currentApiUrl) || environments[0];
     setCurrentEnv(env);
   }, []);

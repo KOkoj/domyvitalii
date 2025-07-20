@@ -3,7 +3,7 @@ import toastService from './toast'
 
 // Create axios instance
 export const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3001/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://domyvitalii-production.up.railway.app/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
@@ -39,8 +39,8 @@ api.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem('refreshToken')
         if (refreshToken) {
-          const response = await axios.post(
-            `${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}/auth/refresh`,
+                  const response = await axios.post(
+          `${import.meta.env.VITE_API_URL || 'https://domyvitalii-production.up.railway.app/api'}/auth/refresh`,
             { refreshToken }
           )
 
