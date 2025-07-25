@@ -39,7 +39,7 @@ api.interceptors.response.use(
       try {
         const refreshToken = localStorage.getItem('refreshToken')
         if (refreshToken) {
-                  const response = await axios.post(
+          const response = await axios.post(
           `${import.meta.env.VITE_API_URL || 'https://domyvitalii-production.up.railway.app/api'}/auth/refresh`,
             { refreshToken }
           )
