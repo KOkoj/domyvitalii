@@ -35,26 +35,29 @@ const allowedOrigins = [
   'https://domyvitalii-admin.netlify.app',
 ];
 
-// Simple, direct CORS handling - exactly as ChatGPT suggested
-app.use((req, res, next) => {
-  const origin = req.headers.origin;
-  console.log('🔍 CORS request from origin:', origin);
-  console.log('📋 Allowed origins:', allowedOrigins);
-  
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-    res.header('Access-Control-Allow-Credentials', 'true');
-    console.log('✅ Origin allowed:', origin);
-  }
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-
-  if (req.method === 'OPTIONS') {
-    console.log('✅ Handling OPTIONS preflight request');
-    return res.sendStatus(200); // allows preflight to succeed
-  }
-  next();
-});
+// Updated CORS configuration - more reliable
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    
+    console.log('🔍 CORS request from origin:', origin);
+    console.log('📋 Allowed origins:', allowedOrigins);
+    
+    if (allowedOrigins.includes(origin)) {
+      console.log('✅ Origin allowed:', origin);
+      return callback(null, true);
+    } else {
+      console.log('❌ Origin blocked:', origin);
+      return callback(new Error('Not allowed by CORS'), false);
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  preflightContinue: false,
+  optionsSuccessStatus: 200
+}));
 
 
 // Security middleware
